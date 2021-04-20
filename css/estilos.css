@@ -275,6 +275,37 @@ h1{
 }
 
 .page{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.quiz-elements{
+    display:flex;
+    margin-top:42px;
     justify-content: center;
     align-items: center;
+}
+
+.opcoes{
+    padding:30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color:#FFFFFF;
+}
+
+.titulo-opcao{
+    padding: 31px 200px 31px 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.titulo-opcao p{
+    font-family: 'Roboto';
+    font-weight: 700;
+    font-size:23px;
+    color:#FFFFFF;
 }

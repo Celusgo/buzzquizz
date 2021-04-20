@@ -82,6 +82,7 @@ function selecionarPergunta(elemento){
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;
+let arrayClicada;
 
 const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
 obterQuiz.then(quizzRecebido);
@@ -100,11 +101,32 @@ function quizzRecebido(retorno){
 }
 
 function responderQuiz(id_clicado){
+    arrayClicada = arrayQuiz[id_clicado-1];
+    perguntasArrayClicada = arrayClicada.questions;
     const corpoPagina = document.querySelector(".page");
     corpoPagina.innerHTML = "";
     corpoPagina.innerHTML =`
     <div class="div-img-topo-quiz">
-        <img src="${arrayQuiz[id_clicado-1].image}"/>
+        <img src="${arrayClicada.image}"/>
+    </div>
+    `
+    for(let i=0; i<arrayClicada.questions["length"]; i++){
+        corpoPagina.innerHTML+=`<div class="quiz-elements">
+        <div class="opcoes" id="caixa${i}">
+            <div class="titulo-opcao" style="background-color: ${arrayClicada.questions[i].color}">
+                <p>${arrayClicada.questions[i].title}</p>
+            </div>
+        </div>     
     </div>`
+        for(let j=0; j<perguntasArrayClicada["length"]; j++){
+            const alocarRespostas = document.getElementById(`caixa${i}`);
+            alocarRespostas.innerHTML += `
+             <div class="resposta-opcao">
+                ${perguntasArrayClicada}
+            </div>
+            `
+        }
+    }
+  
     alert(id_clicado);
 }
