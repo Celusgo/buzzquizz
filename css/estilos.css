@@ -8,14 +8,12 @@
 
 .upperholder{
     display: flex;
-    width:100%;
     justify-content: center;
     align-items: center;
 }
 
 .bottomholder{
     display: flex;
-    width:100%;
     justify-content: center;
     align-items: center; 
 }
@@ -87,4 +85,15 @@ h1{
     width:340px;
     height:181px;
     border-radius: 5px;
+}
+
+.tittle-holder{
+    margin-bottom:12px;
+}
+
+.tittle-holder span{
+    font-family: 'Roboto';
+    font-weight: 700;
+    font-size: 20px;
+    margin-right:895px;
 }
