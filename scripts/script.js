@@ -80,7 +80,7 @@ function selecionarPergunta(elemento){
    perguntaClicada.classList.add();
    alert("faz alguma coisa");
 }
-
+/////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;
 
 const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
@@ -88,21 +88,23 @@ obterQuiz.then(quizzRecebido);
 
 function quizzRecebido(retorno){
     arrayQuiz = retorno.data;
-    const quizzPadraoSup = document.querySelector(".upperholder");
-    for(let i=0; i<3; i++){
-        quizzPadraoSup.innerHTML += `
-                <div class="quiz">
-                    <img class="quiz-image" src="${arrayQuiz[0].image}"/>
+    const quizzPadrao = document.querySelector(".holder");
+    for(let i=0; i<arrayQuiz.length; i++){
+        quizzPadrao.innerHTML += `
+                <div class="quiz" id=${i+1} onclick="responderQuiz(this.id)">
+                    <img class="quiz-image" src="${arrayQuiz[i].image}"/>
+                    <span>${arrayQuiz[i].title}</span>
                 </div>  
         `
     }
+}
 
-    const quizzPadraoInf = document.querySelector(".bottomholder");
-    for(let i=0; i<3; i++){
-        quizzPadraoInf.innerHTML += `
-                <div class="quiz">
-                    <img class="quiz-image" src="${arrayQuiz[0].image}"/>
-                </div>  
-        `
-    }
+function responderQuiz(id_clicado){
+    const corpoPagina = document.querySelector(".page");
+    corpoPagina.innerHTML = "";
+    corpoPagina.innerHTML =`
+    <div class="div-img-topo-quiz">
+        <img src="${arrayQuiz[id_clicado-1].image}"/>
+    </div>`
+    alert(id_clicado);
 }
