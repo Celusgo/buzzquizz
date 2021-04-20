@@ -2,18 +2,31 @@
 *{
     box-sizing: border-box;
 }
-.holder{
-    display: flex;
-    width:100%;
+
+.all-quizzes{
+    margin-top:370px;
+    display:flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: blueviolet;
+}
 
+.upperholder{
+    display: flex;
+    width:100%;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.bottomholder{
+    display: flex;
+    width:100%;
+    justify-content: space-evenly;
+    align-items: center; 
 }
 
 .quiz{
     border-radius: 5px;
-    background-color: aqua;
 }
 
 .topo{
@@ -35,3 +48,7 @@ h1{
     line-height: 43px;
 }
 
+.quiz-image{
+    width:340px;
+    height:181px;
+}
