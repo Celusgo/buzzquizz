@@ -16,3 +16,41 @@ h1{
     font-weight: 700;
     line-height: 43px;
 }
+.container-criar-quizz{
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 181px;
+    width: 1051px;
+    border: 1px solid #D4D4D4;
+    border-radius: 5px;
+    margin-top: 146px;
+}
+.texto-quiz{
+    width: 250px;
+    height: 107px;
+    font-family: 'Roboto, sans serif';
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 23px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    color: #B9B9B9;
+}
+
+.container-criar-quizz>button{
+    width: 151px;
+    height: 40px;
+    border-radius: 50px;
+    border: 1px dashed #EC362D;
+    font-family: 'Roboto', sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 25px;
+    text-align: center;
+    color: #EC362D;
+    background-color: #FFFFFF;
+}
