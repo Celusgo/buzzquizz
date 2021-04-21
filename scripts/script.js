@@ -182,7 +182,7 @@ function criarNiveis(){
 /////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;
 let arrayClicada;
-
+let perguntasArrayClicada;
 const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
 obterQuiz.then(quizzRecebido);
 
@@ -207,25 +207,29 @@ function responderQuiz(id_clicado){
     corpoPagina.innerHTML =`
     <div class="div-img-topo-quiz">
         <img src="${arrayClicada.image}"/>
+        <span>${arrayClicada.title}</span>
     </div>
     `
     for(let i=0; i<arrayClicada.questions["length"]; i++){
-        corpoPagina.innerHTML+=`<div class="quiz-elements">
-        <div class="opcoes" id="caixa${i}">
-            <div class="titulo-opcao" style="background-color: ${arrayClicada.questions[i].color}">
-                <p>${arrayClicada.questions[i].title}</p>
-            </div>
-        </div>     
-    </div>`
-        for(let j=0; j<perguntasArrayClicada["length"]; j++){
+        corpoPagina.innerHTML+=`
+        <div class="quiz-elements">
+            <div class="opcoes">
+                <div class="titulo-opcao" style="background-color: ${arrayClicada.questions[i].color}">
+                    <p>${arrayClicada.questions[i].title}</p>
+                </div>
+                <div class="dimensionar-respostas" id="caixa${i}">
+                </div>
+            </div>     
+        </div>
+        `
+        for(let j=0; j<perguntasArrayClicada.length-1; j++){
             const alocarRespostas = document.getElementById(`caixa${i}`);
             alocarRespostas.innerHTML += `
              <div class="resposta-opcao">
-                ${perguntasArrayClicada}
+                <img class="img-resposta" src="${perguntasArrayClicada[i].answers[j].image}"/>
+                <p>${perguntasArrayClicada[i].answers[j].text}</p>
             </div>
             `
         }
     }
-  
-    alert(id_clicado);
 }
