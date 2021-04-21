@@ -83,7 +83,7 @@ function selecionarPergunta(elemento){
 /////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;
 let arrayClicada;
-
+let perguntasArrayClicada;
 const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
 obterQuiz.then(quizzRecebido);
 
@@ -118,11 +118,11 @@ function responderQuiz(id_clicado){
             </div>
         </div>     
     </div>`
-        for(let j=0; j<perguntasArrayClicada["length"]; j++){
-            const alocarRespostas = document.getElementById(`caixa${i}`);
+        for(let j=0; j<perguntasArrayClicada["length" - 1]; j++){
+            const alocarRespostas = document.querySelector(".opcoes");
             alocarRespostas.innerHTML += `
              <div class="resposta-opcao">
-                ${perguntasArrayClicada}
+                ${perguntasArrayClicada[i].answers[j].text}
             </div>
             `
         }
