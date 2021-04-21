@@ -1,7 +1,8 @@
 let controleValidacaoInfos = true; // quando tem o valor de true, as informações são válidas
 let controleValidacaoPerguntas = true;
-// let objPergunta = {title: '', color: '', answers: []};
-// let objResposta = {text: "", image: "", isCorrectAnswer: Boolean};
+let arrayRespostas = [];
+let arrayPerguntas = [];
+let contadorPerguntasSelecionadas = 0;
 
 function enviarInfosQuiz(){
     document.querySelector('body').innerHTML = `
@@ -22,8 +23,8 @@ function enviarInfosQuiz(){
 }
 function criarPerguntas(){
     const inputImagem = document.querySelector('.input-imagem').value;
-    validarURL(inputImagem);
-    validarTitulo()
+   // validarURL(inputImagem);
+   // validarTitulo()
     validarQtdPerguntas();
     validarQtdNiveis();
     validarInfos(controleValidacaoInfos);
@@ -74,13 +75,13 @@ function validarInfos(validacao){
         <div class="container-criar-perguntas">
             <h2 class="instrucoes-criando-perguntas">Crie suas perguntas</h2>
             <div class="container-perguntas"></div>
-            <button onclick="criarNiveis()">Prosseguir para criar níveis</button> <!-- criar niveis -->
+            <button onclick="validarPergunta()">Prosseguir para criar níveis</button> <!-- criar niveis -->
         </div>
         `
         const containerPerguntas = document.querySelector('.container-perguntas');
         for(let i = 0; i < Number(inputQtdPerguntas); i++){
             containerPerguntas.innerHTML += `
-                <div onclick="selecionarPergunta(this, ${i+1})"class="pergunta">
+                <div onclick="clicarPergunta(this, ${i+1})"class="pergunta">
                     Pergunta ${i+1} 
                     <ion-icon name="create-outline"></ion-icon>
                 </div>
@@ -89,8 +90,33 @@ function validarInfos(validacao){
     }
 }
 
+function clicarPergunta(perguntaSelecionada, numeroPergunta){
+    if(contadorPerguntasSelecionadas!==0){
+        perguntaSelecionada.classList.add('ultima-pergunta-selecionada');
+        
+        let objRespostaCorreta = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-correta').value, image: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, isCorrectAnswer: true};
+        let objRespostaIncorreta1 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-1').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-1').value, isCorrectAnswer: false};
+        let objRespostaIncorreta2 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-2').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-2').value, isCorrectAnswer: false};
+        let objRespostaIncorreta3 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-3').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-3').value, isCorrectAnswer: false};
+        let objPergunta = {title: document.querySelector('.ultima-pergunta-selecionada .texto-pergunta').value, color: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, answers: []};
+
+        arrayRespostas.push(objRespostaCorreta, objRespostaIncorreta1, objRespostaIncorreta2, objRespostaIncorreta3);
+        objPergunta.answers = arrayRespostas;
+        arrayPerguntas.push(objPergunta);
+        console.log(arrayPerguntas);
+        // a array respostas vai entrar na propriedade answers do objetoPergunta 
+        selecionarPergunta(perguntaSelecionada, numeroPergunta);
+    }
+    else{
+        perguntaSelecionada.classList.add('ultima-pergunta-selecionada');
+        selecionarPergunta(perguntaSelecionada, numeroPergunta);
+    }
+}
+
 function selecionarPergunta(perguntaSelecionada, numeroPergunta){
-   perguntaSelecionada.classList.toggle('selecionada');
+    
+   perguntaSelecionada.classList.add('selecionada');
+   contadorPerguntasSelecionadas ++;
    perguntaSelecionada.removeAttribute('onclick');
    perguntaSelecionada.innerHTML = `
         <div class = "dados-pergunta">    
@@ -121,11 +147,8 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     `
     
 }
-
 function validarPergunta(){
-    const corPergunta = document.querySelector('.cor-pergunta').value;
-    arrayQuestions[0] = document.querySelector('.cor-pergunta').value;
-    console.log(arrayQuestions);
+    console.log(arrayPerguntas);
 }
 
 function validarTextoPergunta(){
