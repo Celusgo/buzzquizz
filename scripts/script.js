@@ -1,9 +1,13 @@
 let controleValidacaoInfos = true; // quando tem o valor de true, as informações são válidas
+let controleValidacaoPerguntas = true;
+// let objPergunta = {title: '', color: '', answers: []};
+// let objResposta = {text: "", image: "", isCorrectAnswer: Boolean};
 
 function enviarInfosQuiz(){
-    const pagQuiz = document.querySelector('.pagina-criando-quiz');
-    pagQuiz.classList.remove('escondido');
-    pagQuiz.innerHTML = `
+    document.querySelector('body').innerHTML = `
+    <div class="topo">
+        <h1>BuzzQuizz</h1>
+    </div>
     <div class="container-novo-quiz">
             <h2 class="instrucoes-criando-quiz">Comece pelo começo</h2>
             <div class="inputs-novos-quiz">
@@ -16,14 +20,22 @@ function enviarInfosQuiz(){
         </div>
     `
 }
-
 function criarPerguntas(){
-    //const inputImagem = document.querySelector('.input-imagem').value;
-    //ainda nao implementei a validaçao da URL
+    const inputImagem = document.querySelector('.input-imagem').value;
+    validarURL(inputImagem);
     validarTitulo()
     validarQtdPerguntas();
     validarQtdNiveis();
     validarInfos(controleValidacaoInfos);
+}
+
+function validarURL(valor){
+    
+    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
+    var regexp = new RegExp(expression);
+    if(regexp.test(valor) === false){
+        controleValidacaoInfos = false;
+    }
 }
 
 function validarTitulo(){
@@ -53,20 +65,22 @@ function validarInfos(validacao){
         controleValidacaoInfos = true;
         enviarInfosQuiz();
     }else{
-        const pagQuiz = document.querySelector('.pagina-criando-quiz');
         const inputQtdPerguntas = document.querySelector('.input-qtd-perguntas').value;
 
-        pagQuiz.innerHTML = `
+        document.querySelector('body').innerHTML = `
+        <div class="topo">
+            <h1>BuzzQuizz</h1>
+        </div>
         <div class="container-criar-perguntas">
             <h2 class="instrucoes-criando-perguntas">Crie suas perguntas</h2>
             <div class="container-perguntas"></div>
-            <button onclick="criarNiveis()">Prosseguir para criar níveis</button>
+            <button onclick="criarNiveis()">Prosseguir para criar níveis</button> <!-- criar niveis -->
         </div>
         `
         const containerPerguntas = document.querySelector('.container-perguntas');
         for(let i = 0; i < Number(inputQtdPerguntas); i++){
             containerPerguntas.innerHTML += `
-                <div onclick="selecionarPergunta(this)"class="pergunta">
+                <div onclick="selecionarPergunta(this, ${i+1})"class="pergunta">
                     Pergunta ${i+1} 
                     <ion-icon name="create-outline"></ion-icon>
                 </div>
@@ -75,10 +89,72 @@ function validarInfos(validacao){
     }
 }
 
-function selecionarPergunta(elemento){
-   const perguntaClicada = elemento;
-   perguntaClicada.classList.add();
-   alert("faz alguma coisa");
+function selecionarPergunta(perguntaSelecionada, numeroPergunta){
+   perguntaSelecionada.classList.toggle('selecionada');
+   perguntaSelecionada.removeAttribute('onclick');
+   perguntaSelecionada.innerHTML = `
+        <div class = "dados-pergunta">    
+            <h2> Pergunta ${numeroPergunta}</h2>
+            <input class="texto-pergunta" type="text" placeholder="Texto da pergunta">
+            <input class="cor-pergunta" type="text" placeholder="Cor de fundo da pergunta">
+            <h2> Resposta Correta</h2>
+            <input class="texto-resposta-correta type="text" placeholder="Resposta correta">
+            <input class="imagem-resposta-correta" type="text" placeholder="URL da imagem">
+            <h2> Resposta Incorretas</h2>
+            <div class = "container-respostas-incorretas">
+                <div>
+                    <input class="texto-resposta-incorreta-1" type="text" placeholder="Resposta incorreta 1">
+                    <input class="imagem-resposta-incorreta-1" type="text" placeholder="URL da imagem 1">
+                </div>
+                
+                <div>
+                    <input class="texto-resposta-incorreta-2" type="text" placeholder="Resposta incorreta 2">
+                    <input class="imagem-resposta-incorreta-2" type="text" placeholder="URL da imagem 2">
+                </div>
+                
+                <div>    
+                    <input class="texto-resposta-incorreta-3" type="text" placeholder="Resposta incorreta 3">
+                    <input class="imagem-resposta-incorreta-3" type="text" placeholder="URL da imagem 3">   
+                </div> 
+            </div>
+       </div> 
+    `
+    
+}
+
+function validarPergunta(){
+    const corPergunta = document.querySelector('.cor-pergunta').value;
+    arrayQuestions[0] = document.querySelector('.cor-pergunta').value;
+    console.log(arrayQuestions);
+}
+
+function validarTextoPergunta(){
+    // a ser feita
+}
+
+function validarCorPergunta(valor){
+    if(valor.length === 7){
+        var expression = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/igm
+        var regexp = new RegExp(expression);
+        if(regexp.test(valor) === false){
+            controleValidacaoPerguntas = false;
+        }else{
+            controleValidacaoPerguntas = true;
+        }
+    }else{
+        controleValidacaoPerguntas = false;
+    }
+}
+
+function validarTextoRespostaCorreta(){
+
+   /* if(textoResposta === "" || textoResposta === null){
+        controleValidacaoInfos = false;
+    }           */
+}
+
+function criarNiveis(){
+    // a ser feita
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;

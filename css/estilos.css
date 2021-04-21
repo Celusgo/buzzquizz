@@ -63,15 +63,6 @@ h1{
     background-color: #FFFFFF;
 }
 
-.pagina-criando-quiz{
-    position: fixed;
-    background: #FAFAFA;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 10;
-}
 
 .container-novo-quiz{
     margin-top: 69px;
@@ -184,6 +175,64 @@ h1{
     padding: 0 17px;
 }
 
+.selecionada{
+    height: auto;
+}
+
+.dados-pergunta{
+    display: flex;
+    flex-direction: column;
+}
+
+.dados-pergunta>h2{
+    font-family: 'Roboto', sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 27px;
+    text-align: left;
+}
+
+.container-respostas-incorretas{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.container-respostas-incorretas>div{
+    display: flex;
+    flex-direction: column;
+}
+.dados-pergunta input{
+    height: 46px;
+    width: 564px;
+    margin-bottom: 9px;
+    border-radius: 5px;
+    border: 1px solid #D1D1D1;
+    padding-left: 23px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 22px;
+    color: #111;
+    outline: none;
+}
+
+.dados-pergunta input::placeholder{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 22px;
+    color: #BABABA;
+}
+
+.dados-pergunta h2{
+    margin: 24px 0;
+}
+
+.container-respostas-incorretas>div{
+    margin-bottom: 32px;
+}
+
+/* ---------------------------------------------------*/
 .quiz-image{
     width:340px;
     height:181px;
@@ -246,10 +295,6 @@ h1{
     left: 0;
     bottom: 0;
 
-}
-
-.escondido{
-    display: none;
 }
 
 .div-img-topo-quiz{
