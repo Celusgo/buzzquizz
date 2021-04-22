@@ -2,8 +2,11 @@ let objetoQuiz = {title: "", image: "", questions: [], levels: []}
 let temSegundaRespostaIncorreta = false;
 let temTerceiraRespostaIncorreta = false;
 let arrayPerguntas = [];
+let arrayNiveis = [];
 let qtdPerguntas = 0;
 let qtdNiveis = 0;
+let tituloObjeto = "";
+let imagemObjeto = "";
 
 function enviarInfosQuiz(){
     document.querySelector('body').innerHTML = `
@@ -66,12 +69,12 @@ function validarInfos(){
     qtdNiveis = Number(inputQtdNiveis);
     qtdPerguntas = Number(inputQtdPerguntas);
 
-    if((/*validarURL(inputImagem) || validarTitulo(inputTitulo) || */validarQtdPerguntas(inputQtdNiveis) || validarQtdNiveis(inputQtdPerguntas)) === false){
+    if((validarURL(inputImagem) || validarTitulo(inputTitulo) || validarQtdPerguntas(inputQtdNiveis) || validarQtdNiveis(inputQtdPerguntas)) === false){
         alert("Informações incorretas");
     }else{
-        objetoQuiz.title = inputTitulo;
-        objetoQuiz.image = inputImagem;
-        criarPerguntas (inputQtdPerguntas);      
+        tituloObjeto = inputTitulo;   //  objetoQuiz.title = inputTitulo;   //  objetoQuiz.title = tituloObjeto;
+        imagemObjeto = inputImagem;     // objetoQuiz.image = inputImagem;  // objetoQuiz.image = imagemObjeto;
+        criarPerguntas (inputQtdPerguntas);         
     }
 }
 
@@ -157,7 +160,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     const imagemRespostaErrada2 = document.querySelector(`.pergunta${i+1} .imagem-resposta-incorreta-2${i+1}`).value;
     const RespostaErrada3 = document.querySelector(`.pergunta${i+1} .texto-resposta-incorreta-3${i+1}`).value;
     const imagemRespostaErrada3 = document.querySelector(`.pergunta${i+1} .imagem-resposta-incorreta-3${i+1}`).value;
-    /*
+    
     if(validarCor(corPergunta) == false || validarURL(imagemRespostaCorreta) == false || validarURL(imagemRespostaErrada1) == false || respostaCorreta == "" || textoPergunta == "" || textoPergunta.length < 20 ||  RespostaErrada1 == ""){
         validadorPerguntas = false;
     }
@@ -194,13 +197,14 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
         objetoQuiz.questions[i].answers.push({text: RespostaErrada3,image: imagemRespostaErrada3,isCorrectAnswer: false})
         temTerceiraRespostaIncorreta = false
     }
-    */
+    
 }
 
     if(validadorPerguntas){
         criarNiveis();
     }else{
         alert('As informaçoes são inválidas. Tente novamente');
+        objetoQuiz.questions = [];
     }
 }
 
@@ -238,7 +242,18 @@ function selecionarNivel(perguntaSelecionada, numeroNivel){
         </div> 
      `
  }
+function enviarQuizz(requisicao){
+    const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes", objetoQuiz);
+    promisse.then(tratarSucesso);
+    promisse.catch(tratarFalha);
+}
+function tratarSucesso(){
+    alert('sucesso');
+}
 
+function tratarFalha(){
+    alert('objeto enviado sem sucesso');
+}
  function validarNiveis(){
     let validadorNiveis = true;
     let arrayPctNivel = [];
@@ -254,6 +269,13 @@ function selecionarNivel(perguntaSelecionada, numeroNivel){
         }
 
         arrayPctNivel.push(pctNivel);
+
+        arrayNiveis.push({
+            title: tituloNivel,
+            image: imagemNivel,
+            text: descricaoNivel,
+            minValue: Number(pctNivel)
+        });
     }
     const incluiZero = arrayPctNivel.includes("0");
     
@@ -262,20 +284,24 @@ function selecionarNivel(perguntaSelecionada, numeroNivel){
     }
 
     if(validadorNiveis==true){
-        alert('pode seguir');
+        objetoQuiz.image = imagemObjeto
+        objetoQuiz.title = tituloObjeto;
+        objetoQuiz.levels = arrayNiveis;
+        console.log(objetoQuiz);
+        enviarQuizz(objetoQuiz);  
+        criarPaginaFinal();
     }else{
-        alert('NAO pode seguir' );
+        alert('Informacoes Inválidas. Por favor, preencha novamente' );
+        arrayNiveis = [];    //testar depois
+        temSegundaRespostaIncorreta = false;
+        temTerceiraRespostaIncorreta = false;
     }
 }
 
-function checkarPctZero(){
-    const incluiZero = arrayPctNivel.includes("0");
-    if(incluiZero){
-        alert("vc digitou uma pct zero");
-    }else{
-        alert("vc NAO digitou um uma pct zero");
-    }
+function criarPaginaFinal(){
+
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;
 let arrayClicada;
