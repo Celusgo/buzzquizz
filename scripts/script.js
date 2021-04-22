@@ -3,6 +3,7 @@ let controleValidacaoPerguntas = true;
 let arrayRespostas = [];
 let arrayPerguntas = [];
 let contadorPerguntasSelecionadas = 0;
+let qtdPerguntas = 0;
 
 function enviarInfosQuiz(){
     document.querySelector('body').innerHTML = `
@@ -30,14 +31,6 @@ function criarPerguntas(){
     validarInfos(controleValidacaoInfos);
 }
 
-function validarURL(valor){
-    
-    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
-    var regexp = new RegExp(expression);
-    if(regexp.test(valor) === false){
-        controleValidacaoInfos = false;
-    }
-}
 
 function validarTitulo(){
     const inputTitulo = document.querySelector('.input-titulo').value;
@@ -75,7 +68,7 @@ function validarInfos(validacao){
         <div class="container-criar-perguntas">
             <h2 class="instrucoes-criando-perguntas">Crie suas perguntas</h2>
             <div class="container-perguntas"></div>
-            <button onclick="validarPergunta()">Prosseguir para criar níveis</button> <!-- criar niveis -->
+            <button onclick="criarNiveis()">Prosseguir para criar níveis</button> <!-- criar niveis -->
         </div>
         `
         const containerPerguntas = document.querySelector('.container-perguntas');
@@ -86,13 +79,22 @@ function validarInfos(validacao){
                     <ion-icon name="create-outline"></ion-icon>
                 </div>
             `
+            qtdPerguntas = i+1;
         }
+    }   
+
+}
+
+function validarURL(valor){
+    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
+    var regexp = new RegExp(expression);
+    if(regexp.test(valor) === false){
+        controleValidacaoInfos = false;
     }
 }
 
 function clicarPergunta(perguntaSelecionada, numeroPergunta){
     if(contadorPerguntasSelecionadas!==0){
-        perguntaSelecionada.classList.add('ultima-pergunta-selecionada');
         
         let objRespostaCorreta = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-correta').value, image: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, isCorrectAnswer: true};
         let objRespostaIncorreta1 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-1').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-1').value, isCorrectAnswer: false};
@@ -103,9 +105,13 @@ function clicarPergunta(perguntaSelecionada, numeroPergunta){
         arrayRespostas.push(objRespostaCorreta, objRespostaIncorreta1, objRespostaIncorreta2, objRespostaIncorreta3);
         objPergunta.answers = arrayRespostas;
         arrayPerguntas.push(objPergunta);
-        console.log(arrayPerguntas);
         // a array respostas vai entrar na propriedade answers do objetoPergunta 
         selecionarPergunta(perguntaSelecionada, numeroPergunta);
+
+        const ultimaPerguntaSelecionada = document.querySelector('.ultima-pergunta-selecionada')
+        ultimaPerguntaSelecionada.classList.remove('ultima-pergunta-selecionada');
+
+        perguntaSelecionada.classList.add('ultima-pergunta-selecionada');
     }
     else{
         perguntaSelecionada.classList.add('ultima-pergunta-selecionada');
@@ -114,7 +120,6 @@ function clicarPergunta(perguntaSelecionada, numeroPergunta){
 }
 
 function selecionarPergunta(perguntaSelecionada, numeroPergunta){
-    
    perguntaSelecionada.classList.add('selecionada');
    contadorPerguntasSelecionadas ++;
    perguntaSelecionada.removeAttribute('onclick');
@@ -145,14 +150,34 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
             </div>
        </div> 
     `
-    
 }
+
 function validarPergunta(){
-    console.log(arrayPerguntas);
+    for(let i = 0; i < arrayPerguntas.length; i++){
+        if(!validarUrlPergunta(arrayPerguntas[i].color)){
+            alert("suas cores estao erradas");
+            return;
+        }
+    }
+    alert('suas cores estao corretas');
+}
+
+function validarUrlPergunta(valor){
+    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
+    var regexp = new RegExp(expression);
+    if(regexp.test(valor) === false){
+        return false;
+    }else{
+        return true;
+    }
 }
 
 function validarTextoPergunta(){
     // a ser feita
+}
+
+function validarTextoRespostaCorreta(){
+    // a ser feita 
 }
 
 function validarCorPergunta(valor){
@@ -160,25 +185,37 @@ function validarCorPergunta(valor){
         var expression = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/igm
         var regexp = new RegExp(expression);
         if(regexp.test(valor) === false){
-            controleValidacaoPerguntas = false;
+            return false;
         }else{
-            controleValidacaoPerguntas = true;
+            return true;
         }
-    }else{
-        controleValidacaoPerguntas = false;
     }
 }
 
-function validarTextoRespostaCorreta(){
-
-   /* if(textoResposta === "" || textoResposta === null){
-        controleValidacaoInfos = false;
-    }           */
-}
-
 function criarNiveis(){
-    // a ser feita
+    if(qtdPerguntas === contadorPerguntasSelecionadas){
+        let objRespostaCorreta = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-correta').value, image: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, isCorrectAnswer: true};
+        let objRespostaIncorreta1 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-1').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-1').value, isCorrectAnswer: false};
+        let objRespostaIncorreta2 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-2').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-2').value, isCorrectAnswer: false};
+        let objRespostaIncorreta3 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-3').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-3').value, isCorrectAnswer: false};
+        let objPergunta = {title: document.querySelector('.ultima-pergunta-selecionada .texto-pergunta').value, color: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, answers: []};
+
+        arrayRespostas.push(objRespostaCorreta, objRespostaIncorreta1, objRespostaIncorreta2, objRespostaIncorreta3);
+        objPergunta.answers = arrayRespostas;
+        arrayPerguntas.push(objPergunta);
+    }else{
+        alert("Por favor, preencha todas as perguntas.")
+    }
+
+    validarPergunta()
+    
 }
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;
 let arrayClicada;
