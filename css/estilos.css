@@ -1,6 +1,7 @@
 body{
     background-color: #fafafa;
     margin-bottom:30px;
+    font-family: 'Roboto', sans-serif;
 }
 .topo{
     position: fixed;
@@ -23,7 +24,9 @@ h1{
     font-weight: 700;
     line-height: 43px;
 }
-
+.pergunta-1{
+    border: 2px solid red;
+}
 .container-criar-quiz{
     margin: 0 auto;
     display: flex;

@@ -1,9 +1,9 @@
-let controleValidacaoInfos = true; // quando tem o valor de true, as informações são válidas
-let controleValidacaoPerguntas = true;
-let arrayRespostas = [];
+let objetoQuiz = {title: "", image: "", questions: [], levels: []}
+let temSegundaRespostaIncorreta = false;
+let temTerceiraRespostaIncorreta = false;
 let arrayPerguntas = [];
-let contadorPerguntasSelecionadas = 0;
 let qtdPerguntas = 0;
+let qtdNiveis = 0;
 
 function enviarInfosQuiz(){
     document.querySelector('body').innerHTML = `
@@ -18,49 +18,64 @@ function enviarInfosQuiz(){
                 <input value="" class="input-qtd-perguntas" type="text" placeholder="Quantidade de perguntas do quizz">
                 <input value="" class="input-qtd-niveis" type="text" placeholder="Quantidade de níveis do quizz">
             </div>
-            <button onclick="criarPerguntas()">Prosseguir para as perguntas</button>
+            <button onclick="validarInfos()">Prosseguir para as perguntas</button>
         </div>
     `
 }
-function criarPerguntas(){
-    const inputImagem = document.querySelector('.input-imagem').value;
-   // validarURL(inputImagem);
-   // validarTitulo()
-    validarQtdPerguntas();
-    validarQtdNiveis();
-    validarInfos(controleValidacaoInfos);
-}
 
-
-function validarTitulo(){
-    const inputTitulo = document.querySelector('.input-titulo').value;
+function validarTitulo(inputTitulo){
     if((typeof inputTitulo !=='string' || inputTitulo.length < 20 || inputTitulo.length > 60) === true ){
-        controleValidacaoInfos = false;
-    }
-}
-
-function validarQtdNiveis(){
-    const inputQtdNiveis = document.querySelector('.input-qtd-niveis').value;
-    if((isNaN(Number(inputQtdNiveis)) || inputQtdNiveis < 2) === true ){
-        controleValidacaoInfos = false;
-    }
-}
-
-function validarQtdPerguntas(){
-    const inputQtdPerguntas = document.querySelector('.input-qtd-perguntas').value;
-    if((isNaN(Number(inputQtdPerguntas)) || inputQtdPerguntas < 3) === true ){
-        controleValidacaoInfos = false;
-    }
-}
-
-function validarInfos(validacao){
-    if(validacao === false){
-        alert('Dados inválidos. Por favor, preencha novamente.')
-        controleValidacaoInfos = true;
-        enviarInfosQuiz();
+        return false;
     }else{
-        const inputQtdPerguntas = document.querySelector('.input-qtd-perguntas').value;
+        return true;
+    }
+}
 
+function validarQtdNiveis(inputQtdNiveis){
+    if((isNaN(Number(inputQtdNiveis)) || inputQtdNiveis < 2) === true ){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+function validarQtdPerguntas(inputQtdPerguntas){
+    if((isNaN(Number(inputQtdPerguntas)) || inputQtdPerguntas < 3) === true ){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+function validarURL(valor){
+    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
+    var regexp = new RegExp(expression);
+    if(regexp.test(valor)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function validarInfos(){
+    const inputTitulo = document.querySelector('.input-titulo').value;
+    const inputImagem = document.querySelector('.input-imagem').value;
+    const inputQtdPerguntas = document.querySelector('.input-qtd-perguntas').value;
+    const inputQtdNiveis = document.querySelector('.input-qtd-niveis').value;
+    
+    qtdNiveis = Number(inputQtdNiveis);
+    qtdPerguntas = Number(inputQtdPerguntas);
+
+    if((validarURL(inputImagem) || validarTitulo(inputTitulo) || validarQtdPerguntas(inputQtdNiveis) || validarQtdNiveis(inputQtdPerguntas)) === false){
+        alert("Informações incorretas");
+    }else{
+        objetoQuiz.title = inputTitulo;
+        objetoQuiz.image = inputImagem;
+        criarPerguntas (inputQtdPerguntas);      
+    }
+}
+
+function criarPerguntas (numeroPerguntas){
         document.querySelector('body').innerHTML = `
         <div class="topo">
             <h1>BuzzQuizz</h1>
@@ -68,119 +83,51 @@ function validarInfos(validacao){
         <div class="container-criar-perguntas">
             <h2 class="instrucoes-criando-perguntas">Crie suas perguntas</h2>
             <div class="container-perguntas"></div>
-            <button onclick="criarNiveis()">Prosseguir para criar níveis</button> <!-- criar niveis -->
+            <button onclick="validarPerguntas()">Prosseguir para criar níveis</button> 
         </div>
-        `
+    `
         const containerPerguntas = document.querySelector('.container-perguntas');
-        for(let i = 0; i < Number(inputQtdPerguntas); i++){
+        for(let i = 0; i < Number(numeroPerguntas); i++){
             containerPerguntas.innerHTML += `
-                <div onclick="clicarPergunta(this, ${i+1})"class="pergunta">
+                <div onclick="selecionarPergunta(this, ${i+1})"class="pergunta">
                     Pergunta ${i+1} 
                     <ion-icon name="create-outline"></ion-icon>
                 </div>
             `
-            qtdPerguntas = i+1;
         }
-    }   
-
 }
-
-function validarURL(valor){
-    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
-    var regexp = new RegExp(expression);
-    if(regexp.test(valor) === false){
-        controleValidacaoInfos = false;
-    }
-}
-
-function clicarPergunta(perguntaSelecionada, numeroPergunta){
-    if(contadorPerguntasSelecionadas!==0){
-        
-        let objRespostaCorreta = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-correta').value, image: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, isCorrectAnswer: true};
-        let objRespostaIncorreta1 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-1').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-1').value, isCorrectAnswer: false};
-        let objRespostaIncorreta2 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-2').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-2').value, isCorrectAnswer: false};
-        let objRespostaIncorreta3 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-3').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-3').value, isCorrectAnswer: false};
-        let objPergunta = {title: document.querySelector('.ultima-pergunta-selecionada .texto-pergunta').value, color: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, answers: []};
-
-        arrayRespostas.push(objRespostaCorreta, objRespostaIncorreta1, objRespostaIncorreta2, objRespostaIncorreta3);
-        objPergunta.answers = arrayRespostas;
-        arrayPerguntas.push(objPergunta);
-        // a array respostas vai entrar na propriedade answers do objetoPergunta 
-        selecionarPergunta(perguntaSelecionada, numeroPergunta);
-
-        const ultimaPerguntaSelecionada = document.querySelector('.ultima-pergunta-selecionada')
-        ultimaPerguntaSelecionada.classList.remove('ultima-pergunta-selecionada');
-
-        perguntaSelecionada.classList.add('ultima-pergunta-selecionada');
-    }
-    else{
-        perguntaSelecionada.classList.add('ultima-pergunta-selecionada');
-        selecionarPergunta(perguntaSelecionada, numeroPergunta);
-    }
-}
-
 function selecionarPergunta(perguntaSelecionada, numeroPergunta){
-   perguntaSelecionada.classList.add('selecionada');
-   contadorPerguntasSelecionadas ++;
-   perguntaSelecionada.removeAttribute('onclick');
-   perguntaSelecionada.innerHTML = `
-        <div class = "dados-pergunta">    
-            <h2> Pergunta ${numeroPergunta}</h2>
-            <input class="texto-pergunta" type="text" placeholder="Texto da pergunta">
-            <input class="cor-pergunta" type="text" placeholder="Cor de fundo da pergunta">
-            <h2> Resposta Correta</h2>
-            <input class="texto-resposta-correta type="text" placeholder="Resposta correta">
-            <input class="imagem-resposta-correta" type="text" placeholder="URL da imagem">
-            <h2> Resposta Incorretas</h2>
-            <div class = "container-respostas-incorretas">
-                <div>
-                    <input class="texto-resposta-incorreta-1" type="text" placeholder="Resposta incorreta 1">
-                    <input class="imagem-resposta-incorreta-1" type="text" placeholder="URL da imagem 1">
-                </div>
-                
-                <div>
-                    <input class="texto-resposta-incorreta-2" type="text" placeholder="Resposta incorreta 2">
-                    <input class="imagem-resposta-incorreta-2" type="text" placeholder="URL da imagem 2">
-                </div>
-                
-                <div>    
-                    <input class="texto-resposta-incorreta-3" type="text" placeholder="Resposta incorreta 3">
-                    <input class="imagem-resposta-incorreta-3" type="text" placeholder="URL da imagem 3">   
-                </div> 
-            </div>
-       </div> 
-    `
-}
-
-function validarPergunta(){
-    for(let i = 0; i < arrayPerguntas.length; i++){
-        if(!validarUrlPergunta(arrayPerguntas[i].color)){
-            alert("suas cores estao erradas");
-            return;
-        }
-    }
-    alert('suas cores estao corretas');
-}
-
-function validarUrlPergunta(valor){
-    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
-    var regexp = new RegExp(expression);
-    if(regexp.test(valor) === false){
-        return false;
-    }else{
-        return true;
-    }
-}
-
-function validarTextoPergunta(){
-    // a ser feita
-}
-
-function validarTextoRespostaCorreta(){
-    // a ser feita 
-}
-
-function validarCorPergunta(valor){
+    perguntaSelecionada.classList.add('selecionada');
+    perguntaSelecionada.removeAttribute('onclick');
+    perguntaSelecionada.innerHTML = `
+         <div class = "dados-pergunta pergunta${numeroPergunta}">    
+             <h2> Pergunta ${numeroPergunta}</h2>
+             <input value="" class="texto-pergunta texto-pergunta${numeroPergunta}" type="text" placeholder="Texto da pergunta">
+             <input value="" class="cor-pergunta cor-pergunta${numeroPergunta}" type="text" placeholder="Cor de fundo da pergunta">
+             <h2> Resposta Correta</h2>
+             <input value="" class="texto-resposta-correta texto-resposta-correta${numeroPergunta}"type="text" placeholder="Resposta correta">
+             <input value="" class="imagem-resposta-correta imagem-resposta-correta${numeroPergunta}" type="text" placeholder="URL da imagem">
+             <h2> Resposta Incorretas</h2>
+             <div class = "container-respostas-incorretas">
+                 <div>
+                     <input value="" class="texto-resposta-incorreta-1 texto-resposta-incorreta-1${numeroPergunta}" type="text" placeholder="Resposta incorreta 1">
+                     <input value="" class="imagem-resposta-incorreta-1 imagem-resposta-incorreta-1${numeroPergunta}" type="text" placeholder="URL da imagem 1">
+                 </div>
+                 
+                 <div>
+                     <input value="" class="texto-resposta-incorreta-2 texto-resposta-incorreta-2${numeroPergunta}" type="text" placeholder="Resposta incorreta 2">
+                     <input value="" class="imagem-resposta-incorreta-2 imagem-resposta-incorreta-2${numeroPergunta}" type="text" placeholder="URL da imagem 2">
+                 </div>
+                 
+                 <div>    
+                     <input value="" class="texto-resposta-incorreta-3 texto-resposta-incorreta-3${numeroPergunta}" type="text" placeholder="Resposta incorreta 3">
+                     <input value="" class="imagem-resposta-incorreta-3 imagem-resposta-incorreta-3${numeroPergunta}" type="text" placeholder="URL da imagem 3">   
+                 </div> 
+             </div>
+        </div> 
+     `
+ }
+ function validarCor(valor){
     if(valor.length === 7){
         var expression = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/igm
         var regexp = new RegExp(expression);
@@ -189,32 +136,107 @@ function validarCorPergunta(valor){
         }else{
             return true;
         }
-    }
-}
-
-function criarNiveis(){
-    if(qtdPerguntas === contadorPerguntasSelecionadas){
-        let objRespostaCorreta = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-correta').value, image: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, isCorrectAnswer: true};
-        let objRespostaIncorreta1 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-1').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-1').value, isCorrectAnswer: false};
-        let objRespostaIncorreta2 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-2').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-2').value, isCorrectAnswer: false};
-        let objRespostaIncorreta3 = {text: document.querySelector('.ultima-pergunta-selecionada .texto-resposta-incorreta-3').value, image: document.querySelector('.ultima-pergunta-selecionada .imagem-resposta-incorreta-3').value, isCorrectAnswer: false};
-        let objPergunta = {title: document.querySelector('.ultima-pergunta-selecionada .texto-pergunta').value, color: document.querySelector('.ultima-pergunta-selecionada .cor-pergunta').value, answers: []};
-
-        arrayRespostas.push(objRespostaCorreta, objRespostaIncorreta1, objRespostaIncorreta2, objRespostaIncorreta3);
-        objPergunta.answers = arrayRespostas;
-        arrayPerguntas.push(objPergunta);
     }else{
-        alert("Por favor, preencha todas as perguntas.")
+        return false;
     }
-
-    validarPergunta()
-    
 }
 
+ function validarPerguntas(){
+    
+    let validadorPerguntas = true;
 
 
+    for(let i = 0; i < qtdPerguntas; i++){
+    const textoPergunta = document.querySelector(`.pergunta${i+1} .texto-pergunta${i+1}`).value;
+    const corPergunta = document.querySelector(`.pergunta${i+1} .cor-pergunta${i+1}`).value;
+    const respostaCorreta = document.querySelector(`.pergunta${i+1} .texto-resposta-correta${i+1}`).value;
+    const imagemRespostaCorreta = document.querySelector(`.pergunta${i+1} .imagem-resposta-correta${i+1}`).value;
+    const RespostaErrada1 = document.querySelector(`.pergunta${i+1} .texto-resposta-incorreta-1${i+1}`).value;
+    const imagemRespostaErrada1 = document.querySelector(`.pergunta${i+1} .imagem-resposta-incorreta-1${i+1}`).value;
+    const RespostaErrada2 = document.querySelector(`.pergunta${i+1} .texto-resposta-incorreta-2${i+1}`).value;
+    const imagemRespostaErrada2 = document.querySelector(`.pergunta${i+1} .imagem-resposta-incorreta-2${i+1}`).value;
+    const RespostaErrada3 = document.querySelector(`.pergunta${i+1} .texto-resposta-incorreta-3${i+1}`).value;
+    const imagemRespostaErrada3 = document.querySelector(`.pergunta${i+1} .imagem-resposta-incorreta-3${i+1}`).value;
+    
+    if(validarCor(corPergunta) == false || validarURL(imagemRespostaCorreta) == false || validarURL(imagemRespostaErrada1) == false || respostaCorreta == "" || textoPergunta == "" || textoPergunta.length < 20 ||  RespostaErrada1 == ""){
+        validadorPerguntas = false;
+    }
+    
+    if(RespostaErrada2 !== ""){
+        temSegundaRespostaIncorreta = true;
+    }
+    if(RespostaErrada3 !== ""){
+        temTerceiraRespostaIncorreta = true
+    }
+    if(temSegundaRespostaIncorreta == true){
+        if((validarURL(imagemRespostaErrada2)[i+1]) == false){
+            validadorPerguntas = false;
+        }
+    }
+    if(temTerceiraRespostaIncorreta == true){
+        if((validarURL(imagemRespostaErrada3)[i+1]) == false){
+            validadorPerguntas = false;
+        }
+    }
+    objetoQuiz.questions.push({title: textoPergunta, color: corPergunta, answers: 
+        [{text: respostaCorreta, image: imagemRespostaCorreta, isCorrectAnswer: true
+            },
+            {text: RespostaErrada1, image: imagemRespostaErrada1, isCorrectAnswer: false
+            }
+        ]
+    })
+    if(temSegundaRespostaIncorreta == true){
+        objetoQuiz.questions[i].answers.push({text: RespostaErrada2,image: imagemRespostaErrada2,isCorrectAnswer: false
+        })
+         temSegundaRespostaIncorreta = false 
+    }
+    if(temTerceiraRespostaIncorreta == true){
+        objetoQuiz.questions[i].answers.push({text: RespostaErrada3,image: imagemRespostaErrada3,isCorrectAnswer: false})
+        temTerceiraRespostaIncorreta = false
+    }
+}
+    
+    if(validadorPerguntas){
+        criarNiveis();
+    }else{
+        alert('As informaçoes são inválidas. Tente novamente');
+    }
+}
 
-
+function criarNiveis (){
+    document.querySelector('body').innerHTML = `
+    <div class="topo">
+        <h1>BuzzQuizz</h1>
+    </div>
+    <div class="container-criar-perguntas">
+        <h2 class="instrucoes-criando-perguntas">Agora, decida os níveis</h2>
+        <div class="container-perguntas"></div>
+        <button onclick="validarPerguntas()">Finalizar Quiz</button> 
+    </div>
+`
+    const containerPerguntas = document.querySelector('.container-perguntas');
+    for(let i = 0; i < qtdNiveis; i++){
+        containerPerguntas.innerHTML += `
+            <div onclick="selecionarNivel(this, ${i+1})"class="pergunta">
+                Nível ${i+1} 
+                <ion-icon name="create-outline"></ion-icon>
+            </div>
+        `
+    }
+}
+function selecionarNivel(perguntaSelecionada, numeroNivel){
+    perguntaSelecionada.classList.add('selecionada');
+    perguntaSelecionada.removeAttribute('onclick');
+    perguntaSelecionada.innerHTML = `
+         <div class = "dados-pergunta pergunta${numeroNivel}">    
+             <h2> Nivel ${numeroNivel}</h2>
+             <input value="" class="texto-pergunta titulo-nivel${numeroNivel}" type="text" placeholder="Título do nível">
+             <input value="" class="cor-pergunta cor-pergunta${numeroNivel}" type="text" placeholder="% de acerto mínima">
+             <input value="" class="texto-resposta-correta texto-resposta-correta${numeroNivel}"type="text" placeholder="URL da imagem do nível">
+             <input value="" class="imagem-resposta-correta imagem-resposta-correta${numeroNivel}" type="text" placeholder="Descrição do nível">
+        </div> 
+     `
+ }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;
