@@ -66,7 +66,7 @@ function validarInfos(){
     qtdNiveis = Number(inputQtdNiveis);
     qtdPerguntas = Number(inputQtdPerguntas);
 
-    if((validarURL(inputImagem) || validarTitulo(inputTitulo) || validarQtdPerguntas(inputQtdNiveis) || validarQtdNiveis(inputQtdPerguntas)) === false){
+    if((/*validarURL(inputImagem) || validarTitulo(inputTitulo) || */validarQtdPerguntas(inputQtdNiveis) || validarQtdNiveis(inputQtdPerguntas)) === false){
         alert("Informações incorretas");
     }else{
         objetoQuiz.title = inputTitulo;
@@ -157,7 +157,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     const imagemRespostaErrada2 = document.querySelector(`.pergunta${i+1} .imagem-resposta-incorreta-2${i+1}`).value;
     const RespostaErrada3 = document.querySelector(`.pergunta${i+1} .texto-resposta-incorreta-3${i+1}`).value;
     const imagemRespostaErrada3 = document.querySelector(`.pergunta${i+1} .imagem-resposta-incorreta-3${i+1}`).value;
-    
+    /*
     if(validarCor(corPergunta) == false || validarURL(imagemRespostaCorreta) == false || validarURL(imagemRespostaErrada1) == false || respostaCorreta == "" || textoPergunta == "" || textoPergunta.length < 20 ||  RespostaErrada1 == ""){
         validadorPerguntas = false;
     }
@@ -194,8 +194,9 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
         objetoQuiz.questions[i].answers.push({text: RespostaErrada3,image: imagemRespostaErrada3,isCorrectAnswer: false})
         temTerceiraRespostaIncorreta = false
     }
+    */
 }
-    
+
     if(validadorPerguntas){
         criarNiveis();
     }else{
@@ -211,7 +212,7 @@ function criarNiveis (){
     <div class="container-criar-perguntas">
         <h2 class="instrucoes-criando-perguntas">Agora, decida os níveis</h2>
         <div class="container-perguntas"></div>
-        <button onclick="validarPerguntas()">Finalizar Quiz</button> 
+        <button onclick="validarNiveis()">Finalizar Quiz</button> 
     </div>
 `
     const containerPerguntas = document.querySelector('.container-perguntas');
@@ -228,16 +229,53 @@ function selecionarNivel(perguntaSelecionada, numeroNivel){
     perguntaSelecionada.classList.add('selecionada');
     perguntaSelecionada.removeAttribute('onclick');
     perguntaSelecionada.innerHTML = `
-         <div class = "dados-pergunta pergunta${numeroNivel}">    
+         <div class = "dados-pergunta nivel${numeroNivel}">    
              <h2> Nivel ${numeroNivel}</h2>
-             <input value="" class="texto-pergunta titulo-nivel${numeroNivel}" type="text" placeholder="Título do nível">
-             <input value="" class="cor-pergunta cor-pergunta${numeroNivel}" type="text" placeholder="% de acerto mínima">
-             <input value="" class="texto-resposta-correta texto-resposta-correta${numeroNivel}"type="text" placeholder="URL da imagem do nível">
-             <input value="" class="imagem-resposta-correta imagem-resposta-correta${numeroNivel}" type="text" placeholder="Descrição do nível">
+             <input value="" class=" titulo-nivel${numeroNivel}" type="text" placeholder="Título do nível">
+             <input value="" class=" pct-nivel${numeroNivel}" type="text" placeholder="% de acerto mínima">
+             <input value="" class=" imagem-nivel${numeroNivel}"type="text" placeholder="URL da imagem do nível">
+             <input value="" class=" descricao-nivel${numeroNivel}" type="text" placeholder="Descrição do nível">
         </div> 
      `
  }
 
+ function validarNiveis(){
+    let validadorNiveis = true;
+    let arrayPctNivel = [];
+    
+    for(let i = 0; i < qtdNiveis; i++){
+        const tituloNivel = document.querySelector(`.nivel${i+1} .titulo-nivel${i+1}`).value;
+        const pctNivel = document.querySelector(`.nivel${i+1} .pct-nivel${i+1}`).value;
+        const imagemNivel = document.querySelector(`.nivel${i+1} .imagem-nivel${i+1}`).value;
+        const descricaoNivel = document.querySelector(`.nivel${i+1} .descricao-nivel${i+1}`).value;
+    
+        if(tituloNivel == "" || tituloNivel.length < 10 || pctNivel<0||pctNivel>100 || descricaoNivel.length<30 || validarURL(imagemNivel) == false){
+            validadorNiveis=false;
+        }
+
+        arrayPctNivel.push(pctNivel);
+    }
+    const incluiZero = arrayPctNivel.includes("0");
+    
+    if(incluiZero === false){
+        validadorNiveis=false;
+    }
+
+    if(validadorNiveis==true){
+        alert('pode seguir');
+    }else{
+        alert('NAO pode seguir' );
+    }
+}
+
+function checkarPctZero(){
+    const incluiZero = arrayPctNivel.includes("0");
+    if(incluiZero){
+        alert("vc digitou uma pct zero");
+    }else{
+        alert("vc NAO digitou um uma pct zero");
+    }
+}
 /////////////////////////////////////////////////////////////////////////////////////////
 let arrayQuiz;
 let arrayClicada;
