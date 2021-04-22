@@ -243,6 +243,10 @@ let arrayQuiz;
 let arrayClicada;
 let perguntasArrayClicada;
 let respostasArrayClicada;
+let contadorCorretas = 0;
+let contadorTotais = 0;
+
+
 const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
 obterQuiz.then(quizzRecebido);
 
@@ -263,7 +267,6 @@ function responderQuiz(id_clicado){
     arrayClicada = arrayQuiz[id_clicado-1];
     perguntasArrayClicada = arrayClicada.questions;
     perguntasArrayClicada.sort(comparador);
-
     function comparador() { 
         return Math.random() - 0.5; 
     }
@@ -291,7 +294,7 @@ function responderQuiz(id_clicado){
         for(let j=0; j<perguntasArrayClicada.length-1; j++){ 
             const alocarRespostas = document.getElementById(`caixa${i}`);
             alocarRespostas.innerHTML += `
-             <div class="resposta-opcao" onclick="verificarSeCorreto(this.id)" id=${perguntasArrayClicada[i].answers[j].isCorrectAnswer}>
+             <div class="resposta-opcao" onclick=" verificarPai(this); verificarSeCorreto(this.id);" id=${perguntasArrayClicada[i].answers[j].isCorrectAnswer}>
                 <img class="img-resposta" src="${perguntasArrayClicada[i].answers[j].image}"/>
                 <p>${perguntasArrayClicada[i].answers[j].text}</p>
             </div>
@@ -300,11 +303,57 @@ function responderQuiz(id_clicado){
     }
 }
 
+let arrFilhos = [];
+
+function verificarPai(clicado){
+    const pai = clicado.parentNode;
+    arrFilhos = pai.children;
+    for(let i=0; i<arrFilhos.length;i++){
+        arrFilhos[i].setAttribute("onclick", "");
+    }
+}
+
 function verificarSeCorreto(idCorreto){
     if(idCorreto === "true"){
         alert("Resposta certa!");
+        contadorCorretas++;
+        contadorTotais++;
+        if(contadorTotais === arrayClicada.questions.length){
+            telaPontos();
+        } 
     }
     else  if(idCorreto === "false"){
         alert("Resposta errada!");
+        contadorTotais++;
+        if(contadorTotais === arrayClicada.questions.length){
+            telaPontos();
+        } 
+    }
+}
+
+
+
+function telaPontos(){
+    const pontuacaoFinal = (contadorCorretas/contadorTotais)*100;
+    const telaPontos = document.querySelector(".page");
+    for(let i = arrayClicada.levels.length-1; i>=0; i--){
+        if (pontuacaoFinal >= arrayClicada.levels[i].minValue){
+            telaPontos.innerHTML+=`
+            <div class="quiz-elements">
+                <div class="opcoes">
+                    <div class="titulo-opcao" style="background-color: #EC362D">
+                        <p>${Math.round(pontuacaoFinal)}% de acerto: ${arrayClicada.levels[i].title}</p>
+                    </div>
+                    <div class="informacoes-pontuacao">
+                            <img class="imagem-pontuacao" src="${arrayClicada.levels[i].image}"/>
+                            <p class="texto-pontuacao">${arrayClicada.levels[i].text}</p>
+                    </div>
+                </div>     
+            </div>
+            <button class="reiniciar-quiz">Reiniciar Quizz</button>
+            <button class="retornar-home"> Voltar pra home</button>
+            `
+            break;
+        }
     }
 }
