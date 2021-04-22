@@ -220,6 +220,7 @@ function criarNiveis(){
 let arrayQuiz;
 let arrayClicada;
 let perguntasArrayClicada;
+let respostasArrayClicada;
 const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
 obterQuiz.then(quizzRecebido);
 
@@ -239,6 +240,12 @@ function quizzRecebido(retorno){
 function responderQuiz(id_clicado){
     arrayClicada = arrayQuiz[id_clicado-1];
     perguntasArrayClicada = arrayClicada.questions;
+    perguntasArrayClicada.sort(comparador);
+
+    function comparador() { 
+        return Math.random() - 0.5; 
+    }
+
     const corpoPagina = document.querySelector(".page");
     corpoPagina.innerHTML = "";
     corpoPagina.innerHTML =`
@@ -247,7 +254,7 @@ function responderQuiz(id_clicado){
         <span>${arrayClicada.title}</span>
     </div>
     `
-    for(let i=0; i<arrayClicada.questions["length"]; i++){
+    for(let i=0; i<arrayClicada.questions.length; i++){
         corpoPagina.innerHTML+=`
         <div class="quiz-elements">
             <div class="opcoes">
@@ -259,14 +266,23 @@ function responderQuiz(id_clicado){
             </div>     
         </div>
         `
-        for(let j=0; j<perguntasArrayClicada.length-1; j++){
+        for(let j=0; j<perguntasArrayClicada.length-1; j++){ 
             const alocarRespostas = document.getElementById(`caixa${i}`);
             alocarRespostas.innerHTML += `
-             <div class="resposta-opcao">
+             <div class="resposta-opcao" onclick="verificarSeCorreto(this.id)" id=${perguntasArrayClicada[i].answers[j].isCorrectAnswer}>
                 <img class="img-resposta" src="${perguntasArrayClicada[i].answers[j].image}"/>
                 <p>${perguntasArrayClicada[i].answers[j].text}</p>
             </div>
             `
         }
+    }
+}
+
+function verificarSeCorreto(idCorreto){
+    if(idCorreto === "true"){
+        alert("Resposta certa!");
+    }
+    else  if(idCorreto === "false"){
+        alert("Resposta errada!");
     }
 }
