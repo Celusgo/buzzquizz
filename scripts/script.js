@@ -239,6 +239,8 @@ function selecionarNivel(perguntaSelecionada, numeroNivel){
  }
 
 /////////////////////////////////////////////////////////////////////////////////////////
+
+//Variáveis Globais
 let arrayQuiz;
 let arrayClicada;
 let perguntasArrayClicada;
@@ -246,10 +248,14 @@ let respostasArrayClicada;
 let contadorCorretas = 0;
 let contadorTotais = 0;
 let respostasAleatorias = [];
+//
 
+//Requisição do servidor
 const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
 obterQuiz.then(quizzRecebido);
+//
 
+//Renderizar quiz escolhido na tela
 function quizzRecebido(retorno){
     arrayQuiz = retorno.data;
     const quizzPadrao = document.querySelector(".holder");
@@ -262,7 +268,9 @@ function quizzRecebido(retorno){
         `
     }
 }
+//
 
+//Renderizar respostas do quiz escolhido
 function responderQuiz(id_clicado){
     arrayClicada = arrayQuiz[id_clicado-1];
     perguntasArrayClicada = arrayClicada.questions;
@@ -282,7 +290,6 @@ function responderQuiz(id_clicado){
     for(let i=0; i<arrayClicada.questions.length; i++){
         respostasAleatorias = perguntasArrayClicada[i].answers;
         respostasAleatorias.sort(comparador);
-        console.log(respostasAleatorias);
         corpoPagina.innerHTML+=`
         <div class="quiz-elements">
             <div class="opcoes">
@@ -305,7 +312,9 @@ function responderQuiz(id_clicado){
         }
     }
 }
+//
 
+//Alterar o estilo das respostas ao serem clicadas
 let arrFilhos = [];
 
 function verificarPai(clicado){
@@ -323,7 +332,9 @@ function verificarPai(clicado){
     }
     clicado.classList.remove("opaco");
 }
+//
 
+//Verificar se a resposta selecionada está correta
 function verificarSeCorreto(idCorreto){
     if(idCorreto === "true"){
         alert("Resposta certa!");
@@ -341,7 +352,9 @@ function verificarSeCorreto(idCorreto){
         } 
     }
 }
+//
 
+//Tela de pontuação final
 function telaPontos(){
     const pontuacaoFinal = (contadorCorretas/contadorTotais)*100;
     const telaPontos = document.querySelector(".page");
@@ -366,3 +379,4 @@ function telaPontos(){
         }
     }
 }
+//
