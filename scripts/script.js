@@ -340,7 +340,6 @@ function verificarPai(clicado){
 //Verificar se a resposta selecionada está correta
 function verificarSeCorreto(idCorreto){
     if(idCorreto === "true"){
-        alert("Resposta certa!");
         contadorCorretas++;
         contadorTotais++;
         if(contadorTotais === arrayClicada.questions.length){
@@ -348,7 +347,6 @@ function verificarSeCorreto(idCorreto){
         } 
     }
     else  if(idCorreto === "false"){
-        alert("Resposta errada!");
         contadorTotais++;
         if(contadorTotais === arrayClicada.questions.length){
             telaPontos();
