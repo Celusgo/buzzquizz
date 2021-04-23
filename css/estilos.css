@@ -445,3 +445,15 @@ h1{
     outline: none;
     border: none;
 }
+
+.cor-verde{
+    color:#009C22;
+}
+
+.cor-vermelha{
+    color:#FF4B4B;
+}
+
+.opaco{
+    opacity: 0.3;
+}
