@@ -7,8 +7,6 @@ let objetoTitulo = "";
 let objetoImagem = "";
 
 
-
-
 function enviarInfosQuiz(){
     const containerPage = document.querySelector(".page");
     const containerNovoQuiz = document.querySelector(".container-novo-quiz");
@@ -26,7 +24,7 @@ function validarInfos(){
      qtdNiveis = inputQtdNiveis;
      objetoTitulo = inputTitulo;
      objetoImagem = inputImagem;    
-    
+
     if(inputTitulo == "" || inputTitulo.length < 20){
         alert("Dados inválidos. Por favor, insira novamente");
     }else if(inputQtdPerguntas == "" || inputQtdPerguntas <3){
@@ -123,7 +121,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     let temSegundaRespostaIncorreta = false;
     let temTerceiraRespostaIncorreta = false;
 
-
+    /*
     for(let i = 0; i < qtdPerguntas; i++){
     const textoPergunta = document.querySelector(`.pergunta${i+1} .texto-pergunta${i+1}`).value;
     const corPergunta = document.querySelector(`.pergunta${i+1} .cor-pergunta${i+1}`).value;
@@ -185,6 +183,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     }
     
 }
+*/
     if(validadorPerguntas){
         objetoQuiz.title = objetoTitulo;   
         objetoQuiz.image = objetoImagem;
@@ -226,7 +225,7 @@ function selecionarNivel(nivelSelecionado, numeroNivel){
              <input value="" class=" titulo-nivel${numeroNivel}" type="text" placeholder="Título do nível">
              <input value="" class=" pct-nivel${numeroNivel}" type="text" placeholder="% de acerto mínima">
              <input value="" class=" imagem-nivel${numeroNivel}"type="text" placeholder="URL da imagem do nível">
-             <input value="" class=" descricao-nivel${numeroNivel}" type="text" placeholder="Descrição do nível">
+             <input value="" class=" expandida descricao-nivel${numeroNivel}" type="text" placeholder="Descrição do nível">
         </div> 
      `
  }
@@ -267,11 +266,13 @@ function selecionarNivel(nivelSelecionado, numeroNivel){
             console.log(idQuizz);
         })
         .catch((error) => {
-            console.log('objeto nao enviado');
+            objetoQuiz.levels = [];
+            arrayNiveis = []; 
         })
         criarPaginaFinal();
     }else{
         alert('Informacoes Inválidas. Por favor, preencha novamente' );
+        objetoQuiz.levels = [];
         arrayNiveis = [];    
         temSegundaRespostaIncorreta = false;
         temTerceiraRespostaIncorreta = false;

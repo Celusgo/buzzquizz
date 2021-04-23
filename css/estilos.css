@@ -111,6 +111,7 @@ h1{
     flex-direction: column;
 }
 
+
 .inputs-novos-quiz>input{
     height: 46px;
     width: 564px;
@@ -381,6 +382,36 @@ h1{
 }
 .imagem-gradiente{
     background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.5) 65.1%, #000000 100%);
+}
+
+@media (max-width: 1100px){
+    .container-criar-quiz{
+        width: 80%;
+    } 
+    .container-novo-quiz{
+        width: 100%;
+    }
+    .container-criar-perguntas{
+        width: 100%;
+    }
+    .container-criar-niveis{
+        width: 100%;
+    }
+    .container-ultima-pagina{
+        width: 100%;
+    }
+    .container-ultima-pagina .container-imagem{
+        width: 90%;
+    }
+    .selecionada .dados-nivel .expandida{
+        height: 177px;
+        position: relative;
+    }
+    .selecionada .dados-nivel .expandida::placeholder{
+        position: absolute;
+        top: 13px;
+        left: 13px;
+    }
 }
 
 /* ---------------------------------------------------*/
