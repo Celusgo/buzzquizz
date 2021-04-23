@@ -5,6 +5,7 @@ let qtdPerguntas = 0;
 let qtdNiveis = 0;
 let objetoTitulo = "";
 let objetoImagem = "";
+let idMeuQuiz ;
 
 
 function enviarInfosQuiz(){
@@ -62,7 +63,7 @@ function criarPerguntas (numeroPerguntas){
         const containerPerguntas = document.querySelector('.container-perguntas');
         for(let i = 0; i < Number(numeroPerguntas); i++){
             containerPerguntas.innerHTML += `
-                <div onclick="selecionarPergunta(this, ${i+1})"class="nivel">
+                <div onclick="selecionarPergunta(this, ${i+1})"class="pergunta">
                     Pergunta ${i+1} 
                     <ion-icon name="create-outline"></ion-icon>
                 </div>
@@ -121,7 +122,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     let temSegundaRespostaIncorreta = false;
     let temTerceiraRespostaIncorreta = false;
 
-    /*
+    
     for(let i = 0; i < qtdPerguntas; i++){
     const textoPergunta = document.querySelector(`.pergunta${i+1} .texto-pergunta${i+1}`).value;
     const corPergunta = document.querySelector(`.pergunta${i+1} .cor-pergunta${i+1}`).value;
@@ -183,7 +184,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     }
     
 }
-*/
+
     if(validadorPerguntas){
         objetoQuiz.title = objetoTitulo;   
         objetoQuiz.image = objetoImagem;
@@ -209,7 +210,7 @@ function criarNiveis (){
 
     for(let i = 0; i < qtdNiveis; i++){
         containerNiveis.innerHTML += `
-            <div onclick="selecionarNivel(this, ${i+1})"class="pergunta">
+            <div onclick="selecionarNivel(this, ${i+1})"class="nivel">
                 Nível ${i+1} 
                 <ion-icon name="create-outline"></ion-icon>
             </div>
@@ -262,8 +263,7 @@ function selecionarNivel(nivelSelecionado, numeroNivel){
         .post('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes', objetoQuiz)
         .then(({ data }) => {
             console.log(data.id);
-            idQuizz = data.id;
-            console.log(idQuizz);
+            idMeuQuiz = data.id;
         })
         .catch((error) => {
             objetoQuiz.levels = [];
@@ -285,7 +285,7 @@ function criarPaginaFinal(){
     imagem.setAttribute('src', `${objetoQuiz.image}`);
 
     const titulo = document.querySelector('.container-imagem p');
-    titulo.innerHTML(`${objetoQuiz.image}`);
+    titulo.innerHTML = `${objetoQuiz.title}`;
     
     const containerCriarNiveis = document.querySelector('.container-criar-niveis');
     containerCriarNiveis.classList.add('escondido');
@@ -293,18 +293,30 @@ function criarPaginaFinal(){
     const paginaFinal = document.querySelector('.container-ultima-pagina');
     paginaFinal.classList.remove('escondido');
 
+    
+
 }
 function voltarHome(){
     const containerPage = document.querySelector('.page');
     containerPage.classList.remove('escondido');
-
+    console.log(idMeuQuizz);
 
     const paginaFinal = document.querySelector('.container-ultima-pagina');
     paginaFinal.classList.add('escondido');
     
 
     topo.scrollIntoView();
-    
+}
+
+function resetarDados(){
+    objetoQuiz = {title: "", image: "", questions: [], levels: []};
+    arrayPerguntas = [];
+    arrayNiveis = [];
+    qtdPerguntas = 0;
+    qtdNiveis = 0;
+    objetoTitulo = "";
+    objetoImagem = "";
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
