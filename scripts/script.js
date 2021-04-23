@@ -8,96 +8,63 @@ let qtdNiveis = 0;
 let tituloObjeto = "";
 let imagemObjeto = "";
 
+
 function enviarInfosQuiz(){
-    document.querySelector('body').innerHTML = `
-    <div class="topo">
-        <h1>BuzzQuizz</h1>
-    </div>
-    <div class="container-novo-quiz">
-            <h2 class="instrucoes-criando-quiz">Comece pelo começo</h2>
-            <div class="inputs-novos-quiz">
-                <input value="" class="input-titulo" type="text" placeholder="Titulo do seu quizz">
-                <input value="" class="input-imagem" type="text" placeholder="URL da imagem do seu quizz">
-                <input value="" class="input-qtd-perguntas" type="text" placeholder="Quantidade de perguntas do quizz">
-                <input value="" class="input-qtd-niveis" type="text" placeholder="Quantidade de níveis do quizz">
-            </div>
-            <button onclick="validarInfos()">Prosseguir para as perguntas</button>
-        </div>
-    `
-}
-
-function validarTitulo(inputTitulo){
-    if((typeof inputTitulo !=='string' || inputTitulo.length < 20 || inputTitulo.length > 60) === true ){
-        return false;
-    }else{
-        return true;
-    }
-}
-
-function validarQtdNiveis(inputQtdNiveis){
-    if((isNaN(Number(inputQtdNiveis)) || inputQtdNiveis < 2) === true ){
-        return false;
-    }else{
-        return true;
-    }
-}
-
-function validarQtdPerguntas(inputQtdPerguntas){
-    if((isNaN(Number(inputQtdPerguntas)) || inputQtdPerguntas < 3) === true ){
-        return false;
-    }else{
-        return true;
-    }
-}
-
-function validarURL(valor){
-    var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
-    var regexp = new RegExp(expression);
-    if(regexp.test(valor)){
-        return true;
-    }else{
-        return false;
-    }
+    const containerPage = document.querySelector(".page");
+    const containerNovoQuiz = document.querySelector(".container-novo-quiz");
+    containerPage.classList.add('escondido');
+    containerNovoQuiz.classList.remove('escondido');
 }
 
 function validarInfos(){
-    const inputTitulo = document.querySelector('.input-titulo').value;
-    const inputImagem = document.querySelector('.input-imagem').value;
-    const inputQtdPerguntas = document.querySelector('.input-qtd-perguntas').value;
-    const inputQtdNiveis = document.querySelector('.input-qtd-niveis').value;
-    
-    qtdNiveis = Number(inputQtdNiveis);
-    qtdPerguntas = Number(inputQtdPerguntas);
+    const inputTitulo = document.querySelector(".input-titulo").value;
+    const inputImagem = document.querySelector(".input-imagem").value;
+    const inputQtdPerguntas = document.querySelector(".input-qtd-perguntas").value;
+    const inputQtdNiveis = document.querySelector(".input-qtd-niveis").value;
 
-    if((validarURL(inputImagem) || validarTitulo(inputTitulo) || validarQtdPerguntas(inputQtdNiveis) || validarQtdNiveis(inputQtdPerguntas)) === false){
-        alert("Informações incorretas");
-    }else{
-        tituloObjeto = inputTitulo;   //  objetoQuiz.title = inputTitulo;   //  objetoQuiz.title = tituloObjeto;
-        imagemObjeto = inputImagem;     // objetoQuiz.image = inputImagem;  // objetoQuiz.image = imagemObjeto;
-        criarPerguntas (inputQtdPerguntas);         
+    qtdNiveis = inputQtdNiveis
+    
+    if(inputTitulo == "" || inputTitulo.length < 20){
+        alert("Dados inválidos. Por favor, insira novamente");
+    }else if(inputQtdPerguntas == "" || inputQtdPerguntas <3){
+        alert("Dados inválidos. Por favor, insira novamente");
+    }else if(inputQtdNiveis == "" || inputQtdNiveis <2){
+        alert("Dados inválidos. Por favor, insira novamente");
+    }else if(inputImagem == "" || checkImgOnline(inputImagem) === false){
+        alert("Dados inválidos. Por favor, insira novamente");
     }
+    else {
+        objetoQuiz.title = inputTitulo;   
+        objetoQuiz.image = inputImagem;  
+        criarPerguntas (inputQtdPerguntas); 
+    }
+}
+function checkImgOnline(valor){
+    var img = new Image();        
+    try {
+        img.src = valor;
+        return true;
+    } catch(err) {
+        return false;
+    }   
 }
 
 function criarPerguntas (numeroPerguntas){
-        document.querySelector('body').innerHTML = `
-        <div class="topo">
-            <h1>BuzzQuizz</h1>
-        </div>
-        <div class="container-criar-perguntas">
-            <h2 class="instrucoes-criando-perguntas">Crie suas perguntas</h2>
-            <div class="container-perguntas"></div>
-            <button onclick="validarPerguntas()">Prosseguir para criar níveis</button> 
-        </div>
-    `
+        const containerNovoQuiz = document.querySelector(".container-novo-quiz");
+        containerNovoQuiz.classList.add('escondido');
+    
+        const containerCriarPerguntas = document.querySelector('.container-criar-perguntas');
+        containerCriarPerguntas.classList.remove('escondido');
+        
         const containerPerguntas = document.querySelector('.container-perguntas');
         for(let i = 0; i < Number(numeroPerguntas); i++){
             containerPerguntas.innerHTML += `
-                <div onclick="selecionarPergunta(this, ${i+1})"class="pergunta">
+                <div onclick="selecionarPergunta(this, ${i+1})"class="nivel">
                     Pergunta ${i+1} 
                     <ion-icon name="create-outline"></ion-icon>
                 </div>
             `
-        }
+    }
 }
 function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     perguntaSelecionada.classList.add('selecionada');
@@ -143,7 +110,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
         return false;
     }
 }
-
+    
  function validarPerguntas(){
     
     let validadorPerguntas = true;
@@ -161,7 +128,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     const RespostaErrada3 = document.querySelector(`.pergunta${i+1} .texto-resposta-incorreta-3${i+1}`).value;
     const imagemRespostaErrada3 = document.querySelector(`.pergunta${i+1} .imagem-resposta-incorreta-3${i+1}`).value;
     
-    if(validarCor(corPergunta) == false || validarURL(imagemRespostaCorreta) == false || validarURL(imagemRespostaErrada1) == false || respostaCorreta == "" || textoPergunta == "" || textoPergunta.length < 20 ||  RespostaErrada1 == ""){
+    if(validarCor(corPergunta) == false || checkImgOnline(imagemRespostaCorreta) == false || checkImgOnline(imagemRespostaErrada1) == false || respostaCorreta == "" || textoPergunta == "" || textoPergunta.length < 20 ||  RespostaErrada1 == ""){
         validadorPerguntas = false;
     }
     
@@ -172,12 +139,12 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
         temTerceiraRespostaIncorreta = true
     }
     if(temSegundaRespostaIncorreta == true){
-        if((validarURL(imagemRespostaErrada2)[i+1]) == false){
+        if((checkImgOnline(imagemRespostaErrada2)[i+1]) == false){
             validadorPerguntas = false;
         }
     }
     if(temTerceiraRespostaIncorreta == true){
-        if((validarURL(imagemRespostaErrada3)[i+1]) == false){
+        if((checkImgOnline(imagemRespostaErrada3)[i+1]) == false){
             validadorPerguntas = false;
         }
     }
@@ -198,7 +165,6 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
         temTerceiraRespostaIncorreta = false
     }
     
-    
 }
 
     if(validadorPerguntas){
@@ -207,22 +173,24 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
         alert('As informaçoes são inválidas. Tente novamente');
         objetoQuiz.questions = [];
     }
+    
 }
 
+    
+
+
 function criarNiveis (){
-    document.querySelector('body').innerHTML = `
-    <div class="topo">
-        <h1>BuzzQuizz</h1>
-    </div>
-    <div class="container-criar-perguntas">
-        <h2 class="instrucoes-criando-perguntas">Agora, decida os níveis</h2>
-        <div class="container-perguntas"></div>
-        <button onclick="validarNiveis()">Finalizar Quiz</button> 
-    </div>
-`
-    const containerPerguntas = document.querySelector('.container-perguntas');
+    console.log(objetoQuiz.questions);
+    const containerCriarPerguntas = document.querySelector('.container-criar-perguntas');
+    containerCriarPerguntas.classList.add('escondido');
+
+    const containerCriarNiveis = document.querySelector('.container-criar-niveis');
+    containerCriarNiveis.classList.remove('escondido');
+
+    const containerNiveis = document.querySelector('.container-niveis');
+
     for(let i = 0; i < qtdNiveis; i++){
-        containerPerguntas.innerHTML += `
+        containerNiveis.innerHTML += `
             <div onclick="selecionarNivel(this, ${i+1})"class="pergunta">
                 Nível ${i+1} 
                 <ion-icon name="create-outline"></ion-icon>
@@ -230,11 +198,11 @@ function criarNiveis (){
         `
     }
 }
-function selecionarNivel(perguntaSelecionada, numeroNivel){
-    perguntaSelecionada.classList.add('selecionada');
-    perguntaSelecionada.removeAttribute('onclick');
-    perguntaSelecionada.innerHTML = `
-         <div class = "dados-pergunta nivel${numeroNivel}">    
+function selecionarNivel(nivelSelecionado, numeroNivel){
+    nivelSelecionado.classList.add('selecionada');
+    nivelSelecionado.removeAttribute('onclick');
+    nivelSelecionado.innerHTML = `
+         <div class = "dados-nivel nivel${numeroNivel}">    
              <h2> Nivel ${numeroNivel}</h2>
              <input value="" class=" titulo-nivel${numeroNivel}" type="text" placeholder="Título do nível">
              <input value="" class=" pct-nivel${numeroNivel}" type="text" placeholder="% de acerto mínima">
@@ -244,13 +212,6 @@ function selecionarNivel(perguntaSelecionada, numeroNivel){
      `
  }
 
-function tratarSucesso(promise){
-    console.log(promise.data);
-}
-
-function tratarFalha(){
-    alert('objeto enviado sem sucesso');
-}
  function validarNiveis(){
     let validadorNiveis = true;
     let arrayPctNivel = [];
@@ -261,7 +222,7 @@ function tratarFalha(){
         const imagemNivel = document.querySelector(`.nivel${i+1} .imagem-nivel${i+1}`).value;
         const descricaoNivel = document.querySelector(`.nivel${i+1} .descricao-nivel${i+1}`).value;
     
-        if( tituloNivel == "" || tituloNivel.length < 10 || pctNivel<0||pctNivel>100 || descricaoNivel.length<30 || validarURL(imagemNivel) == false){
+        if( tituloNivel == "" || tituloNivel.length < 10 || pctNivel<0||pctNivel>100 || descricaoNivel.length<30 || checkImgOnline(imagemNivel) == false){
             validadorNiveis=false;
         }
 
@@ -276,7 +237,7 @@ function tratarFalha(){
         validadorNiveis=false;
     }
     
-    if(validadorNiveis==true){
+    if(validadorNiveis==true){  
         objetoQuiz.image = imagemObjeto
         objetoQuiz.title = tituloObjeto;
         objetoQuiz.levels = arrayNiveis;
@@ -289,80 +250,35 @@ function tratarFalha(){
             console.log(idQuizz);
         })
         .catch((error) => {
-            //alert(`error ${error.response.status}`);
+            
         })
         criarPaginaFinal();
     }else{
         alert('Informacoes Inválidas. Por favor, preencha novamente' );
-        arrayNiveis = [];    //testar depois
+        arrayNiveis = [];    
         temSegundaRespostaIncorreta = false;
         temTerceiraRespostaIncorreta = false;
     }
 }
 
 function criarPaginaFinal(){
-    document.querySelector('body').innerHTML = `
-    <div class="topo">
-        <h1>BuzzQuizz</h1>
-    </div>
-    <div class="container-ultima-pagina">
-        <h2>Seu quizz está pronto</h2>
+    const containerCriarNiveis = document.querySelector('.container-criar-niveis');
+    containerCriarNiveis.classList.add('escondido');
 
-        <div class="imagem-gradiente imagem-pagina-final">
-            <img src="${objetoQuiz.image}" alt="">
-            <p>${objetoQuiz.title}</p>
-        </div>
-        <div class="botoes">
-            <button class="acessar">Acessar Quizz</button>
-            <button onclick="voltarHome()"class="voltar">Voltar pra home</button>
-        </div>
-    </div>
+    const paginaFinal = document.querySelector('.container-ultima-pagina');
+    paginaFinal.classList.remove('escondido');
 
-`
 }
 function voltarHome(){
-    const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
-    document.querySelector('body').innerHTML = `
-    <!DOCTYPE html>
-    <html lang="pt-br">
-    <head>
-        <link rel="stylesheet" href="css/reset.css" />
-        <link rel="stylesheet" href="css/estilos.css" />
-        <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>BuzzQuizz</title>
-    </head>
-    <body>
-        <div class="topo">
-            <h1>BuzzQuizz</h1>
-        </div>
-        <div class="page">
-           
-            <div class="container-criar-quiz">
-                <div class="texto-quiz">Você não criou nenhum quizz ainda :(</div>
-                <button onclick='enviarInfosQuiz()'>Criar Quizz</button>
-            </div>
-        
-            
-            <div class="tittle-holder"><p>Todos os Quizzes</p>
-                <div class="holder">
-            
-                </div>
-            </div>
-            
-        </div> 
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
-        <script src="scripts/script.js"></script> 
-    </body>
-    </html>    
+    const containerPage = document.querySelector('.page');
+    containerPage.classList.remove('escondido');
 
-`
+    const paginaFinal = document.querySelector('.container-ultima-pagina');
+    paginaFinal.classList.add('escondido');
     
-    obterQuiz.then(quizzRecebido);
+
+    topo.scrollIntoView();
+    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

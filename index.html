@@ -29,6 +29,42 @@
         </div>
         
     </div> 
+
+    <div class="container-novo-quiz escondido">
+            <h2 class="instrucoes-criando-quiz">Comece pelo começo</h2>
+            <div class="inputs-novos-quiz">
+                <input value="" class="input-titulo" type="text" placeholder="Titulo do seu quizz">
+                <input value="" class="input-imagem" type="text" placeholder="URL da imagem do seu quizz">
+                <input value="" class="input-qtd-perguntas" type="text" placeholder="Quantidade de perguntas do quizz">
+                <input value="" class="input-qtd-niveis" type="text" placeholder="Quantidade de níveis do quizz">
+            </div>
+            <button onclick="validarInfos()">Prosseguir para as perguntas</button>
+    </div>
+
+    <div class="container-criar-perguntas escondido">
+        <h2 class="instrucoes-criando-perguntas">Crie suas perguntas</h2>
+        <div class="container-perguntas"></div>
+        <button onclick="validarPerguntas()">Prosseguir para criar níveis</button> 
+    </div>
+
+    <div class="container-criar-niveis escondido">
+        <h2 class="instrucoes-criando-niveis">Agora, decida os níveis</h2>
+        <div class="container-niveis"></div>
+        <button onclick="validarNiveis()">Finalizar Quiz</button> 
+    </div>
+
+    <div class="container-ultima-pagina ">
+        <h2>Seu quizz está pronto</h2>
+        <div class="container-imagem">
+            <img src="loading.png" alt=""> <!-- imagem qualquer -->
+            <p>TITULO TITULO</p>
+        </div>
+        <div class="container-botoes">
+            <button class="acessar">Acessar Quiz</button>
+            <button onclick="voltarHome()"class="voltar">Voltar pra Home</button>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
     <script src="scripts/script.js"></script> 
