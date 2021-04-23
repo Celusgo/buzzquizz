@@ -248,6 +248,8 @@ let respostasArrayClicada;
 let contadorCorretas = 0;
 let contadorTotais = 0;
 let respostasAleatorias = [];
+let idDoQuizzSelecionado;
+let rolar = 1;
 //
 
 //Requisição do servidor
@@ -255,7 +257,7 @@ const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/
 obterQuiz.then(quizzRecebido);
 //
 
-//Renderizar quiz escolhido na tela
+//Renderizar quizes na tela
 function quizzRecebido(retorno){
     arrayQuiz = retorno.data;
     const quizzPadrao = document.querySelector(".holder");
@@ -270,8 +272,9 @@ function quizzRecebido(retorno){
 }
 //
 
-//Renderizar respostas do quiz escolhido
+//Renderizar quiz escolhido na tela
 function responderQuiz(id_clicado){
+    idDoQuizzSelecionado = id_clicado;
     arrayClicada = arrayQuiz[id_clicado-1];
     perguntasArrayClicada = arrayClicada.questions;
     
@@ -293,7 +296,7 @@ function responderQuiz(id_clicado){
         corpoPagina.innerHTML+=`
         <div class="quiz-elements">
             <div class="opcoes">
-                <div class="titulo-opcao" style="background-color: ${arrayClicada.questions[i].color}">
+                <div class="titulo-opcao" id=titulo${i} style="background-color: ${arrayClicada.questions[i].color}">
                     <p>${arrayClicada.questions[i].title}</p>
                 </div>
                 <div class="dimensionar-respostas" id="caixa${i}">
@@ -304,7 +307,7 @@ function responderQuiz(id_clicado){
         for(let j=0; j<perguntasArrayClicada.length-1; j++){ 
             const alocarRespostas = document.getElementById(`caixa${i}`);
             alocarRespostas.innerHTML += `
-             <div class="resposta-opcao" onclick=" verificarPai(this); verificarSeCorreto(this.id);" id=${respostasAleatorias[j].isCorrectAnswer}>
+             <div class="resposta-opcao" onclick=" verificarPai(this); setTimeout(rolarAutomatico, 2000); verificarSeCorreto(this.id);" id=${respostasAleatorias[j].isCorrectAnswer}>
                 <img class="img-resposta" src="${respostasAleatorias[j].image}"/>
                 <p>${respostasAleatorias[j].text}</p>
             </div>
@@ -354,6 +357,14 @@ function verificarSeCorreto(idCorreto){
 }
 //
 
+//Rolagem automática para próxima questão
+function rolarAutomatico(){
+    const rolagemAutomatica = document.getElementById(`titulo${rolar}`);
+    rolagemAutomatica.scrollIntoView();
+    rolar++;
+}    
+//
+ 
 //Tela de pontuação final
 function telaPontos(){
     const pontuacaoFinal = (contadorCorretas/contadorTotais)*100;
@@ -363,7 +374,7 @@ function telaPontos(){
             telaPontos.innerHTML+=`
             <div class="quiz-elements">
                 <div class="opcoes">
-                    <div class="titulo-opcao" style="background-color: #EC362D">
+                    <div class="titulo-opcao" id=titulo${arrayClicada.questions.length} style="background-color: #EC362D">
                         <p>${Math.round(pontuacaoFinal)}% de acerto: ${arrayClicada.levels[i].title}</p>
                     </div>
                     <div class="informacoes-pontuacao">
@@ -372,11 +383,90 @@ function telaPontos(){
                     </div>
                 </div>     
             </div>
-            <button class="reiniciar-quiz">Reiniciar Quizz</button>
-            <button class="retornar-home"> Voltar pra home</button>
+            <button class="reiniciar-quiz" onclick="reiniciarQuiz(); rolarTopo();">Reiniciar Quizz</button>
+            <button class="retornar-home" onclick="retornarHome()"> Voltar pra home</button>
             `
             break;
         }
     }
+}
+//
+ 
+//Botão reiniciar quiz
+function reiniciarQuiz(){
+        rolar = 1;
+        contadorCorretas = 0;
+        contadorTotais = 0;
+        arrayClicada = arrayQuiz[idDoQuizzSelecionado-1];
+        perguntasArrayClicada = arrayClicada.questions;
+        
+        function comparador() { 
+            return Math.random() - 0.5; 
+        }
+    
+        const corpoPagina = document.querySelector(".page");
+        corpoPagina.innerHTML = "";
+        corpoPagina.innerHTML =`
+        <div class="div-img-topo-quiz">
+            <img src="${arrayClicada.image}"/>
+            <span>${arrayClicada.title}</span>
+        </div>
+        `
+        for(let i=0; i<arrayClicada.questions.length; i++){
+            respostasAleatorias = perguntasArrayClicada[i].answers;
+            respostasAleatorias.sort(comparador);
+            corpoPagina.innerHTML+=`
+            <div class="quiz-elements">
+                <div class="opcoes">
+                    <div class="titulo-opcao" id=titulo${i} style="background-color: ${arrayClicada.questions[i].color}">
+                        <p>${arrayClicada.questions[i].title}</p>
+                    </div>
+                    <div class="dimensionar-respostas" id="caixa${i}">
+                    </div>
+                </div>     
+            </div>
+            `
+            for(let j=0; j<perguntasArrayClicada.length-1; j++){ 
+                const alocarRespostas = document.getElementById(`caixa${i}`);
+                alocarRespostas.innerHTML += `
+                 <div class="resposta-opcao" onclick=" verificarPai(this); setTimeout(rolarAutomatico, 2000); verificarSeCorreto(this.id);" id=${respostasAleatorias[j].isCorrectAnswer}>
+                    <img class="img-resposta" src="${respostasAleatorias[j].image}"/>
+                    <p>${respostasAleatorias[j].text}</p>
+                </div>
+                `
+            }
+        }
+    }
+//
+
+//Rolagem automática para o topo
+function rolarTopo(){
+    const rolagemAutomatica = document.querySelector(".div-img-topo-quiz");
+    rolagemAutomatica.scrollIntoView();
+}    
+//
+
+//Botão retornar para a home
+function retornarHome(){
+    rolar = 1;
+    contadorCorretas = 0;
+    contadorTotais = 0;
+    const resetar = document.querySelector(".page");
+    resetar.innerHTML="";
+    resetar.innerHTML=`
+    <div class="container-criar-quiz">
+        <div class="texto-quiz">Você não criou nenhum quizz ainda :(</div>
+        <button onclick='enviarInfosQuiz()'>Criar Quizz</button>
+    </div>
+
+
+    <div class="tittle-holder"><p>Todos os Quizzes</p>
+        <div class="holder">
+
+        </div>
+    </div>
+    `
+    const resetQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
+    resetQuiz.then(quizzRecebido);
 }
 //
