@@ -1,12 +1,12 @@
 let objetoQuiz = {title: "", image: "", questions: [], levels: []}
-let temSegundaRespostaIncorreta = false;
-let temTerceiraRespostaIncorreta = false;
 let arrayPerguntas = [];
 let arrayNiveis = [];
 let qtdPerguntas = 0;
 let qtdNiveis = 0;
-let tituloObjeto = "";
-let imagemObjeto = "";
+let objetoTitulo = "";
+let objetoImagem = "";
+
+
 
 
 function enviarInfosQuiz(){
@@ -22,7 +22,10 @@ function validarInfos(){
     const inputQtdPerguntas = document.querySelector(".input-qtd-perguntas").value;
     const inputQtdNiveis = document.querySelector(".input-qtd-niveis").value;
 
-    qtdNiveis = inputQtdNiveis
+     qtdPerguntas = inputQtdPerguntas;
+     qtdNiveis = inputQtdNiveis;
+     objetoTitulo = inputTitulo;
+     objetoImagem = inputImagem;    
     
     if(inputTitulo == "" || inputTitulo.length < 20){
         alert("Dados inválidos. Por favor, insira novamente");
@@ -34,8 +37,10 @@ function validarInfos(){
         alert("Dados inválidos. Por favor, insira novamente");
     }
     else {
-        objetoQuiz.title = inputTitulo;   
-        objetoQuiz.image = inputImagem;  
+        qtdPerguntas = inputQtdPerguntas;
+        qtdNiveis = inputQtdNiveis;
+        objetoTitulo = inputTitulo;
+        objetoImagem = inputImagem;   
         criarPerguntas (inputQtdPerguntas); 
     }
 }
@@ -77,7 +82,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
              <h2> Resposta Correta</h2>
              <input value="" class="texto-resposta-correta texto-resposta-correta${numeroPergunta}"type="text" placeholder="Resposta correta">
              <input value="" class="imagem-resposta-correta imagem-resposta-correta${numeroPergunta}" type="text" placeholder="URL da imagem">
-             <h2> Resposta Incorretas</h2>
+             <h2> Respostas Incorretas</h2>
              <div class = "container-respostas-incorretas">
                  <div>
                      <input value="" class="texto-resposta-incorreta-1 texto-resposta-incorreta-1${numeroPergunta}" type="text" placeholder="Resposta incorreta 1">
@@ -115,6 +120,9 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     
     let validadorPerguntas = true;
 
+    let temSegundaRespostaIncorreta = false;
+    let temTerceiraRespostaIncorreta = false;
+
 
     for(let i = 0; i < qtdPerguntas; i++){
     const textoPergunta = document.querySelector(`.pergunta${i+1} .texto-pergunta${i+1}`).value;
@@ -135,52 +143,63 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
     if(RespostaErrada2 !== ""){
         temSegundaRespostaIncorreta = true;
     }
-    if(RespostaErrada3 !== ""){
-        temTerceiraRespostaIncorreta = true
-    }
     if(temSegundaRespostaIncorreta == true){
         if((checkImgOnline(imagemRespostaErrada2)[i+1]) == false){
             validadorPerguntas = false;
         }
     }
+    if(RespostaErrada3 !== ""){
+        temTerceiraRespostaIncorreta = true
+    }
+    
     if(temTerceiraRespostaIncorreta == true){
         if((checkImgOnline(imagemRespostaErrada3)[i+1]) == false){
             validadorPerguntas = false;
         }
     }
     objetoQuiz.questions.push({title: textoPergunta, color: corPergunta, answers: 
-        [{text: respostaCorreta, image: imagemRespostaCorreta, isCorrectAnswer: true
+        [{text: respostaCorreta, 
+            image: imagemRespostaCorreta, 
+            isCorrectAnswer: true
             },
-            {text: RespostaErrada1, image: imagemRespostaErrada1, isCorrectAnswer: false
+            {text: RespostaErrada1, 
+                image: imagemRespostaErrada1, 
+                isCorrectAnswer: false
             }
         ]
     })
     if(temSegundaRespostaIncorreta == true){
-        objetoQuiz.questions[i].answers.push({text: RespostaErrada2,image: imagemRespostaErrada2,isCorrectAnswer: false
+        objetoQuiz.questions[i].answers.push({
+            text: RespostaErrada2,
+            image: imagemRespostaErrada2,
+            isCorrectAnswer: false
         })
          temSegundaRespostaIncorreta = false 
     }
     if(temTerceiraRespostaIncorreta == true){
-        objetoQuiz.questions[i].answers.push({text: RespostaErrada3,image: imagemRespostaErrada3,isCorrectAnswer: false})
+        objetoQuiz.questions[i].answers.push({
+            text: RespostaErrada3,
+            image: imagemRespostaErrada3,
+            isCorrectAnswer: false})
         temTerceiraRespostaIncorreta = false
     }
     
 }
-
     if(validadorPerguntas){
+        objetoQuiz.title = objetoTitulo;   
+        objetoQuiz.image = objetoImagem;
         criarNiveis();
     }else{
         alert('As informaçoes são inválidas. Tente novamente');
         objetoQuiz.questions = [];
+        temSegundaRespostaIncorreta = false;
+        temTerceiraRespostaIncorreta = false;
     }
     
 }
 
-    
-
 
 function criarNiveis (){
-    console.log(objetoQuiz.questions);
     const containerCriarPerguntas = document.querySelector('.container-criar-perguntas');
     containerCriarPerguntas.classList.add('escondido');
 
@@ -238,8 +257,6 @@ function selecionarNivel(nivelSelecionado, numeroNivel){
     }
     
     if(validadorNiveis==true){  
-        objetoQuiz.image = imagemObjeto
-        objetoQuiz.title = tituloObjeto;
         objetoQuiz.levels = arrayNiveis;
         console.log(objetoQuiz);
         axios
@@ -250,7 +267,7 @@ function selecionarNivel(nivelSelecionado, numeroNivel){
             console.log(idQuizz);
         })
         .catch((error) => {
-            
+            console.log('objeto nao enviado');
         })
         criarPaginaFinal();
     }else{
@@ -262,6 +279,13 @@ function selecionarNivel(nivelSelecionado, numeroNivel){
 }
 
 function criarPaginaFinal(){
+    
+    const imagem = document.querySelector('.container-imagem img');
+    imagem.setAttribute('src', `${objetoQuiz.image}`);
+
+    const titulo = document.querySelector('.container-imagem p');
+    titulo.innerHTML(`${objetoQuiz.image}`);
+    
     const containerCriarNiveis = document.querySelector('.container-criar-niveis');
     containerCriarNiveis.classList.add('escondido');
 
@@ -272,6 +296,7 @@ function criarPaginaFinal(){
 function voltarHome(){
     const containerPage = document.querySelector('.page');
     containerPage.classList.remove('escondido');
+
 
     const paginaFinal = document.querySelector('.container-ultima-pagina');
     paginaFinal.classList.add('escondido');
