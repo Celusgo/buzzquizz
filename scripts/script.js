@@ -198,6 +198,7 @@ function selecionarPergunta(perguntaSelecionada, numeroPergunta){
         temTerceiraRespostaIncorreta = false
     }
     
+    
 }
 
     if(validadorPerguntas){
@@ -242,13 +243,9 @@ function selecionarNivel(perguntaSelecionada, numeroNivel){
         </div> 
      `
  }
-function enviarQuizz(requisicao){
-    const promisse = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes", objetoQuiz);
-    promisse.then(tratarSucesso);
-    promisse.catch(tratarFalha);
-}
-function tratarSucesso(){
-    alert('sucesso');
+
+function tratarSucesso(promise){
+    console.log(promise.data);
 }
 
 function tratarFalha(){
@@ -264,31 +261,36 @@ function tratarFalha(){
         const imagemNivel = document.querySelector(`.nivel${i+1} .imagem-nivel${i+1}`).value;
         const descricaoNivel = document.querySelector(`.nivel${i+1} .descricao-nivel${i+1}`).value;
     
-        if(tituloNivel == "" || tituloNivel.length < 10 || pctNivel<0||pctNivel>100 || descricaoNivel.length<30 || validarURL(imagemNivel) == false){
+        if( tituloNivel == "" || tituloNivel.length < 10 || pctNivel<0||pctNivel>100 || descricaoNivel.length<30 || validarURL(imagemNivel) == false){
             validadorNiveis=false;
         }
 
         arrayPctNivel.push(pctNivel);
 
-        arrayNiveis.push({
-            title: tituloNivel,
-            image: imagemNivel,
-            text: descricaoNivel,
-            minValue: Number(pctNivel)
-        });
+        arrayNiveis.push({title: tituloNivel, image: imagemNivel, text: descricaoNivel, minValue: Number(pctNivel)});
     }
+    
     const incluiZero = arrayPctNivel.includes("0");
     
     if(incluiZero === false){
         validadorNiveis=false;
     }
-
+    
     if(validadorNiveis==true){
         objetoQuiz.image = imagemObjeto
         objetoQuiz.title = tituloObjeto;
         objetoQuiz.levels = arrayNiveis;
         console.log(objetoQuiz);
-        enviarQuizz(objetoQuiz);  
+        axios
+        .post('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes', objetoQuiz)
+        .then(({ data }) => {
+            console.log(data.id);
+            idQuizz = data.id;
+            console.log(idQuizz);
+        })
+        .catch((error) => {
+            //alert(`error ${error.response.status}`);
+        })
         criarPaginaFinal();
     }else{
         alert('Informacoes Inválidas. Por favor, preencha novamente' );
@@ -299,7 +301,68 @@ function tratarFalha(){
 }
 
 function criarPaginaFinal(){
+    document.querySelector('body').innerHTML = `
+    <div class="topo">
+        <h1>BuzzQuizz</h1>
+    </div>
+    <div class="container-ultima-pagina">
+        <h2>Seu quizz está pronto</h2>
 
+        <div class="imagem-gradiente imagem-pagina-final">
+            <img src="${objetoQuiz.image}" alt="">
+            <p>${objetoQuiz.title}</p>
+        </div>
+        <div class="botoes">
+            <button class="acessar">Acessar Quizz</button>
+            <button onclick="voltarHome()"class="voltar">Voltar pra home</button>
+        </div>
+    </div>
+
+`
+}
+function voltarHome(){
+    const obterQuiz = axios.get('https://mock-api.bootcamp.respondeai.com.br/api/v2/buzzquizz/quizzes');
+    document.querySelector('body').innerHTML = `
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <link rel="stylesheet" href="css/reset.css" />
+        <link rel="stylesheet" href="css/estilos.css" />
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BuzzQuizz</title>
+    </head>
+    <body>
+        <div class="topo">
+            <h1>BuzzQuizz</h1>
+        </div>
+        <div class="page">
+           
+            <div class="container-criar-quiz">
+                <div class="texto-quiz">Você não criou nenhum quizz ainda :(</div>
+                <button onclick='enviarInfosQuiz()'>Criar Quizz</button>
+            </div>
+        
+            
+            <div class="tittle-holder"><p>Todos os Quizzes</p>
+                <div class="holder">
+            
+                </div>
+            </div>
+            
+        </div> 
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+        <script src="scripts/script.js"></script> 
+    </body>
+    </html>    
+
+`
+    
+    obterQuiz.then(quizzRecebido);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

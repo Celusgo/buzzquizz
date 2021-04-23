@@ -1,6 +1,6 @@
 body{
     background-color: #fafafa;
-    margin-bottom:30px;
+    margin-bottom: 30px;
     font-family: 'Roboto', sans-serif;
 }
 .topo{
@@ -27,6 +27,9 @@ h1{
 .pergunta-1{
     border: 2px solid red;
 }
+.sem-borda{
+    border: none;
+}
 .container-criar-quiz{
     margin: 0 auto;
     display: flex;
@@ -38,6 +41,10 @@ h1{
     border: 1px dashed #D4D4D4;
     border-radius: 5px;
     margin-top: 146px;
+}
+
+.escondido{
+    display: none;
 }
 
 .texto-quiz{
@@ -75,7 +82,7 @@ h1{
     align-items: center;
 }
 
-.container-novo-quiz>button{
+.container-novo-quiz button{
     width: 369px;
     height: 54px;
     margin-top: 100px;
@@ -91,7 +98,7 @@ h1{
     text-align: center;
 }
 
-.container-novo-quiz>h2{
+.container-novo-quiz h2{
     font-family: 'Roboto', sans-serif;
     font-size: 23px;
     font-weight: 700;
@@ -99,6 +106,10 @@ h1{
     text-align: left;
     margin-bottom: 48px;
     margin-top: 71px;
+}
+
+.container-ultima-pagina{
+    margin-top: 100px;
 }
 
 .inputs-novos-quiz{
@@ -234,6 +245,88 @@ h1{
 
 .container-respostas-incorretas>div{
     margin-bottom: 32px;
+}
+
+.container-ultima-pagina{
+    margin: 0 auto;
+    margin-top: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 481px;
+}
+.container-ultima-pagina h2{
+    font-family: 'Roboto', sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 27px;
+    text-align: left;
+}
+.container-ultima-pagina p{
+    font-family: 'Roboto', sans-serif;
+    font-size: 23px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 27px;
+}
+.container-ultima-pagina .botoes{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.voltar{
+    font-family: 'Roboto', sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 25px;
+    text-align: center;
+    height: 44px;
+    width: 220px;
+    background: #fafafa;
+    color:#818181;
+    border: none;
+}
+.acessar{   
+    width: 369px;
+    height: 54px;
+    margin-top: 100px;
+    background: #EC362D;
+    border-radius: 15px;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 21px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 25px;
+    text-align: center;
+} 
+
+.imagem-pagina-final{
+height: 266px;
+width: 500px;
+border-radius: 5px;
+position: relative;
+}
+
+.imagem-pagina-final p{
+    position: absolute;
+    bottom: 10px;
+    left: 24px;
+}
+
+.imagem-pagina-final img{
+    width: 99%;
+    height: 100%;
+}
+
+.imagem-gradiente{
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.5) 65.1%, #000000 100%);
+}
+
+.escondido{
+    display: none;
 }
 
 /* ---------------------------------------------------*/
